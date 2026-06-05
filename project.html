@@ -1,0 +1,12 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><link rel='stylesheet' href='style.css'></head><body><div id='app'></div><script type='module'>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import { getFirestore,doc,getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyBR7tqs0tGxC_F7N1-MiiIdXFcGu_QjJbs",authDomain:"fares-png.firebaseapp.com",projectId:"fares-png",storageBucket:"fares-png.firebasestorage.app",messagingSenderId:"614335638714",appId:"1:614335638714:web:2beb94f0041b69c6dca683"};
+const app=initializeApp(firebaseConfig); const db=getFirestore(app);
+const id=new URLSearchParams(location.search).get('id');
+const snap=await getDoc(doc(db,'projects',id));
+const p=snap.data();
+const blocks=(p.blocks||[]).map(b=>`<img src="${b.image}" style="width:100%;border-radius:20px;margin:30px 0;">`).join('');
+const gallery=(p.gallery||[]).filter(Boolean).map(url=>`<img src="${url}" style="width:100%;border-radius:16px;">`).join('');
+document.getElementById('app').innerHTML=`<div style="max-width:1200px;margin:auto;padding:40px;color:white">${p.cover?`<img src="${p.cover}" style="width:100%;border-radius:20px;">`:''}<h1>${p.name||''}</h1><p>${p.bio||''}</p>${blocks}<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:40px">${gallery}</div></div>`;
+</script></body></html>

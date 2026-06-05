@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Project Builder</title>
+<link rel="stylesheet" href="cms.css"></head>
+<body>
+<div class="topbar">
+<h2>Project Builder</h2>
+<button class="primary" onclick="saveProject()">Publish</button>
+</div>
+
+<div class="layout">
+<div class="canvas-wrap">
+<div class="settings card">
+<input id="projectName" placeholder="Project Name">
+<select id="category"><option>Logo Design</option><option>Brand Identity</option><option>Packaging</option><option>Typography</option><option>Social Media</option><option>Other</option></select><input type="url" id="cover" placeholder="Cover Image URL (ImgBB, Cloudinary, etc)">
+<textarea id="bio" placeholder="Project Bio"></textarea>
+<label><input type="checkbox" id="featured"> Featured Project</label>
+</div>
+
+<div id="canvas"></div>
+</div>
+
+<div class="sidebar">
+<button onclick="addBlock('heading')">+ Heading</button>
+<button onclick="addBlock('text')">+ Text</button>
+<button onclick="addBlock('image')">+ Image</button>
+<button onclick="addBlock('grid')">+ Photo Grid</button>
+</div>
+</div>
+
+<script type="module" src="firebase.js"></script><script src="cms.js"></script>
+</body></html>
