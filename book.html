@@ -1,0 +1,3522 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كورس اللوجو ديزاين والهوية البصرية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0F0F0F;
+    --dark: #171717;
+    --card: #1E1E1E;
+    --card2: #252525;
+    --red: #D6001C;
+    --red-dim: rgba(214,0,28,0.15);
+    --red-glow: rgba(214,0,28,0.4);
+    --white: #F5F5F0;
+    --white-dim: rgba(245,245,240,0.6);
+    --white-faint: rgba(245,245,240,0.08);
+    --border: rgba(245,245,240,0.1);
+    --border-red: rgba(214,0,28,0.3);
+    --sidebar-w: 320px;
+    --font-display: 'Cairo', sans-serif;
+    --font-body: 'Tajawal', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 2;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  /* ── LAYOUT ── */
+  #app { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: 280px;
+    min-width: var(--sidebar-w);
+    background: var(--dark);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 100;
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+  }
+
+  #sidebar.hidden { transform: translateX(100%); }
+
+  .sidebar-header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .book-title-small {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .book-title-main {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.4;
+  }
+
+  /* progress bar */
+  .progress-wrap {
+    margin-top: 16px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--white-dim);
+    margin-bottom: 6px;
+  }
+  .progress-track {
+    height: 3px;
+    background: var(--white-faint);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* search */
+  .search-wrap {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--white-faint);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px 9px 36px;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: right;
+  }
+  .search-input::placeholder { color: rgba(245,245,240,0.3); }
+  .search-input:focus { border-color: var(--red); }
+  .search-wrap { position: relative; }
+  .search-icon {
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--white-dim);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  /* toc */
+  #toc {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0 24px;
+  }
+  #toc::-webkit-scrollbar { width: 4px; }
+  #toc::-webkit-scrollbar-track { background: transparent; }
+  #toc::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .toc-part {
+    padding: 16px 20px 4px;
+  }
+  .toc-part-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .toc-chapter {
+    margin-bottom: 2px;
+  }
+  .toc-chapter-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: none;
+    border: none;
+    color: var(--white-dim);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: right;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+    direction: rtl;
+  }
+  .toc-chapter-btn:hover { background: var(--white-faint); color: var(--white); }
+  .toc-chapter-btn.active { background: var(--red-dim); color: var(--white); }
+  .toc-chapter-btn.active .ch-num { color: var(--red); }
+
+  .ch-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(245,245,240,0.25);
+    min-width: 20px;
+    font-family: var(--font-display);
+  }
+  .ch-arrow {
+    margin-right: auto;
+    font-size: 10px;
+    color: rgba(245,245,240,0.25);
+    transition: transform 0.25s;
+  }
+  .toc-chapter-btn.open .ch-arrow { transform: rotate(90deg); }
+
+  .toc-lessons {
+    display: none;
+    padding-right: 32px;
+    padding-bottom: 4px;
+  }
+  .toc-lessons.open { display: block; }
+
+  .toc-lesson-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: none;
+    border: none;
+    color: rgba(245,245,240,0.4);
+    font-family: var(--font-body);
+    font-size: 12px;
+    text-align: right;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s;
+    direction: rtl;
+  }
+  .toc-lesson-btn:hover { color: var(--white); background: var(--white-faint); }
+  .toc-lesson-btn.active { color: var(--white); }
+  .toc-lesson-btn.done { color: rgba(214,0,28,0.7); }
+  .toc-lesson-btn.done .lesson-dot { background: var(--red); }
+  .lesson-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(245,245,240,0.2);
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    margin-left: 0;
+    margin-right: 280px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: margin-right 0.35s cubic-bezier(.4,0,.2,1);
+  }
+  #main.full { margin-right: 0; }
+
+  /* topbar */
+  #topbar {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: rgba(15,15,15,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .topbar-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--white-dim);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .topbar-toggle:hover { color: var(--white); border-color: var(--red); }
+
+  .topbar-breadcrumb {
+    flex: 1;
+    font-size: 13px;
+    color: var(--white-dim);
+    font-family: var(--font-display);
+  }
+  .topbar-breadcrumb span { color: var(--white); font-weight: 600; }
+
+  .topbar-reading {
+    font-size: 11px;
+    color: var(--white-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .reading-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* content area */
+  #content {
+    flex: 1;
+    padding: 60px 80px 120px;
+    max-width: 860px;
+  }
+
+  /* ── COVER PAGE ── */
+  #cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  #cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 20% 50%, rgba(214,0,28,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #cover::after {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    border: 1px solid var(--border-red);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  .cover-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red-dim);
+    border: 1px solid var(--border-red);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    width: fit-content;
+  }
+
+  .cover-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .cover-title .accent { color: var(--red); }
+
+  .cover-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 300;
+    color: var(--white-dim);
+    margin-bottom: 40px;
+    line-height: 1.4;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 56px;
+    flex-wrap: wrap;
+  }
+  .cover-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cover-meta-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+  .cover-meta-val {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--white);
+  }
+
+  .cover-divider {
+    width: 80px;
+    height: 3px;
+    background: var(--red);
+    margin-bottom: 40px;
+  }
+
+  .cover-toc-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 600px;
+    margin-bottom: 56px;
+  }
+  .cover-toc-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--white-dim);
+  }
+  .cover-toc-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--red);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--red);
+    color: white;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.03em;
+  }
+  .btn-start:hover {
+    background: #ff001f;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(214,0,28,0.35);
+  }
+
+  .big-number {
+    position: absolute;
+    left: -20px;
+    bottom: -40px;
+    font-family: var(--font-display);
+    font-size: 340px;
+    font-weight: 900;
+    color: rgba(214,0,28,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  /* ── LESSON PAGE ── */
+  .lesson-page { animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lesson-part-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .lesson-chapter-num {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: rgba(245,245,240,0.3);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .lesson-title {
+    font-family: var(--font-display);
+    font-size: clamp(38px, 5vw, 58px);
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .lesson-intro {
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.8;
+    margin-bottom: 48px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── CONTENT BLOCKS ── */
+  .content-h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin: 48px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .content-h2::before {
+    content: '';
+    width: 3px;
+    height: 22px;
+    background: var(--red);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .content-h3 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    margin: 32px 0 12px;
+  }
+
+  .content-p {
+    font-size: 19px;
+    color: rgba(245,245,240,0.75);
+    line-height: 1.9;
+    margin-bottom: 20px;
+  }
+
+  /* info card */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 28px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--red);
+  }
+  .info-card-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .info-card p {
+    font-size: 15px;
+    color: var(--white-dim);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  /* definition card */
+  .def-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 32px 0;
+  }
+  .def-word {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+  .def-text {
+    font-size: 16px;
+    color: var(--white-dim);
+    line-height: 1.85;
+  }
+
+  /* visual grid */
+  .visual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .visual-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .visual-card:hover {
+    border-color: var(--border-red);
+    transform: translateY(-4px);
+    background: var(--card2);
+  }
+  .visual-card-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .visual-card-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .visual-card-desc {
+    font-size: 12px;
+    color: var(--white-dim);
+    line-height: 1.6;
+  }
+
+  /* list styled */
+  .styled-list {
+    list-style: none;
+    margin: 20px 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .styled-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(245,245,240,0.75);
+    line-height: 1.7;
+  }
+  .styled-list li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 9px;
+  }
+
+  /* numbered list */
+  .num-list {
+    counter-reset: num;
+    list-style: none;
+    margin: 20px 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .num-list li {
+    counter-increment: num;
+    display: flex;
+    gap: 16px;
+    font-size: 15px;
+    color: rgba(245,245,240,0.75);
+    line-height: 1.7;
+  }
+  .num-list li::before {
+    content: counter(num, arabic-indic);
+    min-width: 28px;
+    height: 28px;
+    background: var(--red-dim);
+    border: 1px solid var(--border-red);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    font-family: var(--font-display);
+    flex-shrink: 0;
+  }
+
+  /* highlight */
+  .highlight {
+    background: var(--red-dim);
+    border: 1px solid var(--border-red);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--white);
+    line-height: 1.8;
+    position: relative;
+  }
+  .highlight::before {
+    content: '"';
+    font-family: var(--font-display);
+    font-size: 60px;
+    color: var(--red);
+    opacity: 0.4;
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    line-height: 1;
+  }
+
+  /* compare table */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 14px;
+  }
+  .compare-table th {
+    background: var(--card);
+    color: var(--red);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-red);
+  }
+  .compare-table td {
+    padding: 13px 20px;
+    color: var(--white-dim);
+    border-bottom: 1px solid var(--border);
+    line-height: 1.6;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: var(--white-faint); }
+
+  /* process steps */
+  .process-steps {
+    position: relative;
+    margin: 32px 0;
+  }
+  .process-step {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 32px;
+    position: relative;
+  }
+  .process-step:last-child { padding-bottom: 0; }
+  .process-step::after {
+    content: '';
+    position: absolute;
+    right: 19px;
+    top: 44px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+  .process-step:last-child::after { display: none; }
+  .step-num {
+    width: 40px;
+    height: 40px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .step-content { flex: 1; }
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .step-desc {
+    font-size: 14px;
+    color: var(--white-dim);
+    line-height: 1.7;
+  }
+
+  /* key takeaways */
+  .takeaways {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 48px 0;
+  }
+  .takeaways-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .takeaways-title::before {
+    content: '✦';
+    color: var(--red);
+    font-size: 14px;
+  }
+  .takeaway-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--white-dim);
+    line-height: 1.7;
+  }
+  .takeaway-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .takeaway-check {
+    width: 18px;
+    height: 18px;
+    background: var(--red-dim);
+    border: 1px solid var(--border-red);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    color: var(--red);
+    margin-top: 2px;
+  }
+
+  /* quiz */
+  .quiz-section {
+    background: linear-gradient(135deg, #1a0a0d 0%, var(--dark) 100%);
+    border: 1px solid var(--border-red);
+    border-radius: 16px;
+    padding: 36px;
+    margin: 48px 0;
+  }
+  .quiz-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .quiz-title span { color: var(--red); }
+  .quiz-subtitle {
+    font-size: 13px;
+    color: var(--white-dim);
+    margin-bottom: 28px;
+  }
+  .quiz-q {
+    margin-bottom: 24px;
+  }
+  .quiz-q-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .quiz-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--white-faint);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: var(--white-dim);
+  }
+  .quiz-opt:hover { border-color: var(--border-red); color: var(--white); }
+  .quiz-opt.correct { background: rgba(0,180,80,0.1); border-color: rgba(0,180,80,0.4); color: #5fffa0; }
+  .quiz-opt.wrong { background: rgba(214,0,28,0.1); border-color: var(--border-red); color: #ff6b6b; }
+  .quiz-opt-letter {
+    width: 24px;
+    height: 24px;
+    background: var(--card);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    flex-shrink: 0;
+    font-family: var(--font-display);
+  }
+
+  /* bottom nav */
+  .lesson-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 0 0;
+    margin-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--white-dim);
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: var(--red); color: var(--white); }
+  .nav-btn.primary {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+    font-weight: 700;
+  }
+  .nav-btn.primary:hover { background: #ff001f; }
+
+  /* mark done btn */
+  .done-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid var(--border-red);
+    color: var(--red);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .done-btn:hover { background: var(--red-dim); }
+  .done-btn.done { background: var(--red-dim); }
+
+  /* chapter intro */
+  .chapter-intro {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 40px;
+    margin: 32px 0;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .chapter-intro::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: -40px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid var(--border-red);
+    border-radius: 50%;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .chapter-intro-num {
+    font-family: var(--font-display);
+    font-size: 80px;
+    font-weight: 900;
+    color: rgba(214,0,28,0.12);
+    line-height: 1;
+    margin-bottom: -20px;
+  }
+  .chapter-intro-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .chapter-intro-desc {
+    font-size: 15px;
+    color: var(--white-dim);
+    line-height: 1.85;
+  }
+
+  /* color swatches */
+  .color-swatches {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .swatch-color {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .swatch-label {
+    font-size: 11px;
+    color: var(--white-dim);
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* font showcase */
+  .font-showcase {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+  }
+  .font-sample-big {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .font-sample-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .font-sample-detail {
+    font-size: 13px;
+    color: var(--white-dim);
+    margin-top: 4px;
+  }
+
+  /* reading progress line */
+  #reading-progress {
+    position: fixed;
+    top: 60px;
+    right: var(--sidebar-w);
+    left: 0;
+    height: 2px;
+    background: transparent;
+    z-index: 89;
+    transition: right 0.35s;
+  }
+  #reading-progress.full { right: 0; }
+  #reading-progress-fill {
+    height: 100%;
+    background: var(--red);
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* mobile toggle overlay */
+  #overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 99;
+  }
+
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+    #sidebar { transform: translateX(100%); width: 300px; min-width: 300px; }
+    #sidebar.visible { transform: translateX(0); }
+    #main { margin-right: 0; }
+    #reading-progress { right: 0; }
+    #content { padding: 40px 24px 80px; }
+    #cover { padding: 40px 24px; }
+    #overlay.visible { display: block; }
+  }
+
+  /* ── STICKY NOTE ── */
+  .sticky-note {
+    background: #2a2000;
+    border: 1px solid #4a3800;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 24px 0;
+    position: relative;
+  }
+  .sticky-note-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #f0c060;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .sticky-note p {
+    font-size: 14px;
+    color: rgba(255,220,100,0.75);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* SVG logo type diagrams */
+  .svg-diagram {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 28px 0;
+    overflow: hidden;
+  }
+  .svg-diagram svg { width: 100%; height: auto; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SIDEBAR -->
+<nav id="sidebar" aria-label="فهرس الكتاب">
+  <div class="sidebar-header">
+    <div class="book-title-small">الكورس المجاني</div>
+    <div class="book-title-main">كورس اللوجو ديزاين<br>المجاني</div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>التقدم</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" type="search" placeholder="ابحث في الكتاب..." id="search-input" autocomplete="off">
+    <span class="search-icon">🔍</span>
+  </div>
+  <div id="toc">
+
+    <div class="toc-part">
+      <div class="toc-part-label">الجزء الأول — الأساسيات</div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch1')" data-ch="ch1">
+          <span class="ch-num">١</span> يعني ايه لوجو؟
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch1">
+          <button class="toc-lesson-btn" onclick="showLesson('l-what-is-logo')"><span class="lesson-dot"></span> يعني ايه لوجو</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-why-logos')"><span class="lesson-dot"></span> ليه اللوجوهات مهمة؟</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-types')"><span class="lesson-dot"></span> أنواع اللوجوهات</button>
+        </div>
+      </div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch2')" data-ch="ch2">
+          <span class="ch-num">٢</span> البراند
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch2">
+          <button class="toc-lesson-btn" onclick="showLesson('l-branding-intro')"><span class="lesson-dot"></span> مقدمة عن البراند</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-logo-vs-brand')"><span class="lesson-dot"></span> اللوجو vs العلامة</button>
+        </div>
+      </div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch3')" data-ch="ch3">
+          <span class="ch-num">٣</span> مبادئ التصميم
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch3">
+          <button class="toc-lesson-btn" onclick="showLesson('l-design-principles')"><span class="lesson-dot"></span> المبادئ الأساسية</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-color-theory')"><span class="lesson-dot"></span> نظرية الألوان</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-typography-basics')"><span class="lesson-dot"></span> الطباعة الأساسية</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc-part">
+      <div class="toc-part-label">الجزء الثاني — تصميم اللوجوهات</div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch4')" data-ch="ch4">
+          <span class="ch-num">٤</span> الطريقة الاحترافية
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch4">
+          <button class="toc-lesson-btn" onclick="showLesson('l-process')"><span class="lesson-dot"></span> مراحل التصميم</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-research')"><span class="lesson-dot"></span> البحث والتحليل</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-psychology')"><span class="lesson-dot"></span> سيكولوجية اللوجوهات</button>
+        </div>
+      </div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch5')" data-ch="ch5">
+          <span class="ch-num">٥</span> بناء اللوجو
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch5">
+          <button class="toc-lesson-btn" onclick="showLesson('l-geometry')"><span class="lesson-dot"></span> الهندسة في اللوجوهات</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-grid')"><span class="lesson-dot"></span> أنظمة الشبكة</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-negative-space')"><span class="lesson-dot"></span> المساحة السلبية</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc-part">
+      <div class="toc-part-label">الجزء الثالث — الهوية البصرية</div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch6')" data-ch="ch6">
+          <span class="ch-num">٦</span> استراتيجية البراند
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch6">
+          <button class="toc-lesson-btn" onclick="showLesson('l-brand-identity')"><span class="lesson-dot"></span> يعني ايه هوية بصرية؟</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-brand-strategy')"><span class="lesson-dot"></span> استراتيجية العلامة</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-brand-guidelines')"><span class="lesson-dot"></span> دليل البراند</button>
+        </div>
+      </div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch7')" data-ch="ch7">
+          <span class="ch-num">٧</span> الطباعة المتقدمة
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch7">
+          <button class="toc-lesson-btn" onclick="showLesson('l-typography-adv')"><span class="lesson-dot"></span> أسس الطباعة المتقدمة</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-font-pairing')"><span class="lesson-dot"></span> تناسق الخطوط</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-logotype')"><span class="lesson-dot"></span> تصميم الخط اللوغوتايب</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc-part">
+      <div class="toc-part-label">الجزء الرابع — العمل مع العملاء</div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch8')" data-ch="ch8">
+          <span class="ch-num">٨</span> العمل المهني
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch8">
+          <button class="toc-lesson-btn" onclick="showLesson('l-brief')"><span class="lesson-dot"></span> فهم البريف</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-client-comm')"><span class="lesson-dot"></span> التواصل مع الكلاينت</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-presentation')"><span class="lesson-dot"></span> تقديم العمل</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc-part">
+      <div class="toc-part-label">الجزء الخامس — الفريلانس والأعمال</div>
+
+      <div class="toc-chapter">
+        <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch9')" data-ch="ch9">
+          <span class="ch-num">٩</span> بناء المسيرة المهنية
+          <span class="ch-arrow">▶</span>
+        </button>
+        <div class="toc-lessons" id="ch9">
+          <button class="toc-lesson-btn" onclick="showLesson('l-portfolio')"><span class="lesson-dot"></span> بناء بورتفوليو</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-pricing')"><span class="lesson-dot"></span> تسعير المشاريع</button>
+          <button class="toc-lesson-btn" onclick="showLesson('l-marketing')"><span class="lesson-dot"></span> التسويق الشخصي</button>
+        </div>
+      </div>
+    </div>
+
+<div class="toc-part">
+  <div class="toc-part-label">الجزء السادس — الأدڤانسد العملي</div>
+
+  <div class="toc-chapter">
+    <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch10')" data-ch="ch10">
+      <span class="ch-num">١٠</span> من البريف للفكرة
+      <span class="ch-arrow">▶</span>
+    </button>
+    <div class="toc-lessons" id="ch10">
+      <button class="toc-lesson-btn" onclick="showLesson('l-brief-deep')"><span class="lesson-dot"></span> فهم البريف بعمق</button>
+      <button class="toc-lesson-btn" onclick="showLesson('l-keywords-mindmap')"><span class="lesson-dot"></span> الكلمات المفتاحية والمايند ماب</button>
+      <button class="toc-lesson-btn" onclick="showLesson('l-sketch-concept')"><span class="lesson-dot"></span> من الكونسبت للإسكيتش</button>
+    </div>
+  </div>
+
+  <div class="toc-chapter">
+    <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch11')" data-ch="ch11">
+      <span class="ch-num">١١</span> ورش اليستريتور
+      <span class="ch-arrow">▶</span>
+    </button>
+    <div class="toc-lessons" id="ch11">
+      <button class="toc-lesson-btn" onclick="showLesson('l-illustrator-setup')"><span class="lesson-dot"></span> تجهيز الملف للوجو</button>
+      <button class="toc-lesson-btn" onclick="showLesson('l-pen-tool-masterclass')"><span class="lesson-dot"></span> Pen Tool عملي</button>
+      <button class="toc-lesson-btn" onclick="showLesson('l-shape-builder-pathfinder')"><span class="lesson-dot"></span> Shape Builder و Pathfinder</button>
+      <button class="toc-lesson-btn" onclick="showLesson('l-vector-cleanup-export')"><span class="lesson-dot"></span> تنظيف الفكتور والتصدير</button>
+    </div>
+  </div>
+
+  <div class="toc-chapter">
+    <button class="toc-chapter-btn" onclick="toggleChapter(this,'ch12')" data-ch="ch12">
+      <span class="ch-num">١٢</span> الهوية والفريلانس
+      <span class="ch-arrow">▶</span>
+    </button>
+    <div class="toc-lessons" id="ch12">
+      <button class="toc-lesson-btn" onclick="showLesson('l-visual-identity-system')"><span class="lesson-dot"></span> بناء الهوية البصرية</button>
+      <button class="toc-lesson-btn" onclick="showLesson('l-freelance-marketing')"><span class="lesson-dot"></span> التسويق وبناء الشغل</button>
+    </div>
+  </div>
+</div>
+  </div>
+</nav>
+
+<!-- READING PROGRESS -->
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+
+<!-- OVERLAY for mobile -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- MAIN -->
+<main id="main">
+  <header id="topbar">
+    <button class="topbar-toggle" onclick="toggleSidebar()" aria-label="فتح/إغلاق الفهرس">☰</button>
+    <div class="topbar-breadcrumb" id="breadcrumb">الكتاب التفاعلي بالمصري</div>
+    <div class="topbar-reading">
+      <div class="reading-dot"></div>
+      <span id="reading-time">١ دقيقة للقراءة</span>
+    </div>
+  </header>
+
+  <div id="content">
+
+    <!-- COVER -->
+    <div id="cover" data-page="cover">
+      <div class="big-number">لوغو</div>
+      <div class="cover-badge">✦ الكورس المجاني</div>
+      <h1 class="cover-title">تصميم <span class="accent">اللوجوهات</span><br>والهوية البصرية</h1>
+      <p class="cover-subtitle">من الصفر لأول لوجو احترافي</p>
+      <div class="cover-divider"></div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">الفصول</div>
+          <div class="cover-meta-val">٩</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">الدروس</div>
+          <div class="cover-meta-val">14</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">المستوى</div>
+          <div class="cover-meta-val">مبتدئ</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">اللغة</div>
+          <div class="cover-meta-val">مصري</div>
+        </div>
+      </div>
+      <div class="cover-toc-preview">
+        <div class="cover-toc-item"><div class="cover-toc-dot"></div><span>أنواع اللوجوهات ومعايير الاحتراف</span></div>
+        <div class="cover-toc-item"><div class="cover-toc-dot"></div><span>العملية الإبداعية الكاملة</span></div>
+        <div class="cover-toc-item"><div class="cover-toc-dot"></div><span>بناء هويات بصرية متكاملة</span></div>
+        <div class="cover-toc-item"><div class="cover-toc-dot"></div><span>العمل مع العملاء والفريلانس</span></div>
+        <div class="cover-toc-item"><div class="cover-toc-dot"></div><span>نظرية الألوان والطباعة</span></div>
+        <div class="cover-toc-item"><div class="cover-toc-dot"></div><span>تسعير المشاريع وبناء المسيرة</span></div>
+      </div>
+      <button class="btn-start" onclick="showLesson('l-what-is-logo')">ابدأ الكورس يلا ←</button>
+    </div>
+
+    <!-- LESSONS (hidden initially, shown by JS) -->
+
+    <!-- L1: ما هو اللوجو -->
+    <div id="l-what-is-logo" class="lesson-page" style="display:none"
+         data-chapter="١ — يعني ايه لوجو؟" data-title="يعني ايه لوجو" data-words="600">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الأول · الدرس الأول</div>
+      <h1 class="lesson-title">يعني ايه لوجو؟</h1>
+      <p class="lesson-intro">اللوجو هو العنصر البصري الأول الذي ببيمثل أي علامة تجارية في العالم. إنه مش مجرد صورة جميلة، بل هو ملخّص بصري لكل قيم ورسالة وشخصية البراند.</p>
+
+      <div class="def-card">
+        <div class="def-word">اللوجو (Logo)</div>
+        <div class="def-text">رمز بصري أو كلمة أو مزيج من الاثنين، متصمم خصيصاً لتمثيل شركة أو منتج أو فكرة بشكل فورية وسهل تفتكره. مشتق من الكلمة اليونانية <strong>logos</strong> التي تعني "كلمة" أو "فكرة".</div>
+      </div>
+
+      <h2 class="content-h2">مكونات اللوجو</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">🔤</span>
+          <div class="visual-card-title">النص (Logotype)</div>
+          <div class="visual-card-desc">اسم البراند بخط متصمم خصيصاً أو مُختار بعناية</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🔷</span>
+          <div class="visual-card-title">الرمز (Icon)</div>
+          <div class="visual-card-desc">شكل بصري أو رمز يمثّل العلامة بدون الحاجة لكلمات</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🎨</span>
+          <div class="visual-card-title">اللون (Color)</div>
+          <div class="visual-card-desc">ألوان متختارة بعناية لتحمل معنى نفسياً واستراتيجياً</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">📐</span>
+          <div class="visual-card-title">الشكل (Shape)</div>
+          <div class="visual-card-desc">الهندسة والنسب التي تُشكّل شخصية اللوجو البصرية</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">مواصفات اللوجو الاحترافي</h2>
+      <p class="content-p">في خمسة معايير ذهبية لازم أن تتوفر في أي شعار احترافي. تُشكّل هذه المعايير الأساس الذي يقيس عليه المتصممون جودة عملهم قبل تسليمه للعميل.</p>
+      <ul class="styled-list">
+        <li><strong>بسيط</strong> — يمكن فهمه ورسمه بسرعة دون تعقيد مبالغ فيه</li>
+        <li><strong>قابل للتذكر</strong> — يبقى في الذهن بعد أول نظرة</li>
+        <li><strong>خالد</strong> — لا يتأثر بالموضة أو الاتجاهات المؤقتة</li>
+        <li><strong>متعدد الاستخدامات</strong> — يعمل على جميع المقاسات والخلفيات</li>
+        <li><strong>ملائم</strong> — يعكس طبيعة المجال والناس اللي مستهدفهم</li>
+      </ul>
+
+      <div class="highlight">
+        "اللوجو لا يبيع الشركة مباشرةً — إنه يُعرّفها. التصميم الاحترافي يُضيف معنىً إلى ما لا معنى له من قبل."
+        <br><small style="color:var(--red);font-size:13px;font-style:normal;margin-top:8px;display:block">— Paul Rand، متصمم شعار IBM و ABC</small>
+      </div>
+
+      <h2 class="content-h2">اللوجو عبر الزمن</h2>
+      <p class="content-p">قبل أن يعرف البشر الكتابة، استخدموا الرموز البصرية. من علامات القبائل القديمة إلى شعارات الحرف في القرون الوسطى، وصولاً إلى العلامات التجارية الحديثة — اللوجو كان دائماً وسيلة الإنسان لقول "أنا هنا، وهذا من أنا".</p>
+
+      <div class="info-card">
+        <div class="info-card-title">💡 هل تعلم؟</div>
+        <p>شعار شركة Shell النفطية مأخوذ فعلاً من صدفة بحرية — المؤسس كان يبيع الأصداف قبل النفط! اللوجو تطوّر عبر أكثر من ١٢٠ سنة، لكن الفكرة الأصلية بقيت.</p>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية من هذا الدرس</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>اللوجو هو الهوية البصرية الأولى لأي علامة تجارية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>يتكون من النص والرمز واللون والشكل</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>معايير الجودة الخمسة: بسيط، قابل للتذكر، خالد، متعدد الاستخدامات، ملائم</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>اللوجو يُعرّف ولا يبيع — وظيفته بناء الهوية لا التسويق المباشر</div>
+      </div>
+
+      <div class="quiz-section">
+        <div class="quiz-title">اختبار قصير — <span>الدرس الأول</span></div>
+        <div class="quiz-subtitle">تحقق من فهمك قبل الانتقال للدرس التالي</div>
+        <div class="quiz-q">
+          <div class="quiz-q-text">ما هي المعايير الخمسة للشعار الاحترافي بحسب هذا الدرس؟</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">أ</span> جميل، ملوّن، حديث، فريد، رقمي</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,true)"><span class="quiz-opt-letter">ب</span> بسيط، قابل للتذكر، خالد، متعدد الاستخدامات، ملائم</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">ج</span> مكلّف، معقد، فاخر، تقني، مشهور</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">د</span> صغير، سريع، رخيص، سهل، عملي</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('cover')">← العودة للغلاف</button>
+        <button class="done-btn" onclick="markDone(this,'l-what-is-logo')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-why-logos')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L2: لماذا تهم اللوجوهات -->
+    <div id="l-why-logos" class="lesson-page" style="display:none"
+         data-chapter="١ — يعني ايه لوجو؟" data-title="ليه اللوجوهات مهمة؟" data-words="700">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الأول · الدرس الثاني</div>
+      <h1 class="lesson-title">ليه اللوجوهات مهمة؟</h1>
+      <p class="lesson-intro">في عالم يتسم بالتشبع البصري، يملك الإنسان فرصة واحدة فقط لترك انطباع أول. اللوجو هو البطل الصامت الذي يخوض هذه المعركة نيابةً عن أي علامة تجارية.</p>
+
+      <h2 class="content-h2">قوة الانطباع الأول</h2>
+      <p class="content-p">الدراسات تُثبت أن الدماغ البشري يشكّل انطباعاً أولياً خلال <strong style="color:var(--red)">٥٠ مللي ثانية</strong> فقط عند رؤية صورة جديدة. هذا أسرع بكثير من أي رسالة نصية أو عرض تقديمي. اللوجو يعمل في هذا النافذة الزمنية الضيقة.</p>
+
+      <div class="info-card">
+        <div class="info-card-title">📊 أرقام مؤثرة</div>
+        <p>٩٤٪ من أول انطباعات المستخدمين مرتبطة بالتصميم البصري. الشركات ذات الهوية البصرية المتسقة تحقق نمواً في الإيرادات بنسبة ٢٣٪ أعلى من منافسيها.</p>
+      </div>
+
+      <h2 class="content-h2">وظائف اللوجو في العالم الحقيقي</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">١</div>
+          <div class="step-content">
+            <div class="step-title">بناء الثقة</div>
+            <div class="step-desc">اللوجو الاحترافي يُشير للعميل أن الشركة جادة ومنظمة. الغياب البصري أو الضعف في الهوية يُثير الشك في جودة المنتج أو الخدمة.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٢</div>
+          <div class="step-content">
+            <div class="step-title">التمييز عن المنافسين</div>
+            <div class="step-desc">في أي سوق مزدحم، يُصبح اللوجو "وجه" البراند. إنه المعيار البصري الذي يُميّز علامتك عن عشرات المنافسين في نفس الفئة.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٣</div>
+          <div class="step-content">
+            <div class="step-title">نقل القيم والشخصية</div>
+            <div class="step-desc">كل عنصر في اللوجو — من الخط إلى اللون إلى الشكل — يحمل رسالة غير مُصرَّح بها عن قيم الشركة وشخصيتها وجمهورها المستهدف.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٤</div>
+          <div class="step-content">
+            <div class="step-title">الولاء والتذكر</div>
+            <div class="step-desc">اللوجوهات الناجحة تُصبح جزءاً من الذاكرة الجمعية. عندما يفكر الناس في "كولا"، يرون الأحمر. عندما يفكرون في "أبل"، يرون التفاحة.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        "لست متصمماً جرافيك تصمم صورة جميلة — أنت تصمم قرارات تجارية بأدوات بصرية."
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الدماغ يُشكّل انطباعاً خلال ٥٠ مللي ثانية فقط — اللوجو يعمل في هذه اللحظة</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>وظائف اللوجو: بناء الثقة، التمييز، نقل القيم، تعزيز الولاء</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>اللوجو الضعيف يُكلّف الشركات أكثر من غيابه على المدى الطويل</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-what-is-logo')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-why-logos')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-types')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L3: أنواع اللوجوهات -->
+    <div id="l-types" class="lesson-page" style="display:none"
+         data-chapter="١ — يعني ايه لوجو؟" data-title="أنواع اللوجوهات" data-words="900">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الأول · الدرس الثالث</div>
+      <h1 class="lesson-title">أنواع اللوجوهات</h1>
+      <p class="lesson-intro">قبل أن تبدأ التصميم، لازم أن تفهم "لغة" اللوجوهات. كل نوع يحمل خصائصه وسياقاته ومزاياه — واختيار النوع الخاطئ قد يُفسد مشروعاً ممتازاً.</p>
+
+      <h2 class="content-h2">الأنواع الرئيسية</h2>
+
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">🔤</span>
+          <div class="visual-card-title">Wordmark</div>
+          <div class="visual-card-desc">اسم الشركة كاملاً بخط متصمم — Google, Coca-Cola, Disney</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🔡</span>
+          <div class="visual-card-title">Lettermark</div>
+          <div class="visual-card-desc">حروف أولى فقط — IBM, HBO, NASA, CNN</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🔷</span>
+          <div class="visual-card-title">Abstract Mark</div>
+          <div class="visual-card-desc">رمز هندسي لا بيمثل شيئاً حرفياً — Nike swoosh, Pepsi</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🦅</span>
+          <div class="visual-card-title">Pictorial Mark</div>
+          <div class="visual-card-desc">صورة أو رمز بيمثل شيئاً حقيقياً — Apple, Twitter bird</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🔠</span>
+          <div class="visual-card-title">Combination Mark</div>
+          <div class="visual-card-desc">نص + رمز معاً — Adidas, Burger King</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🛡️</span>
+          <div class="visual-card-title">Emblem</div>
+          <div class="visual-card-desc">النص داخل شكل أو شارة — Harley-Davidson, Starbucks</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">متى تختار كل نوع؟</h2>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>النوع</th>
+            <th>الأفضل لـ</th>
+            <th>تجنّبه إذا</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Wordmark</strong></td><td>أسماء قصيرة وفريدة، البدايات التي تحتاج تعريفاً</td><td>الاسم طويل أو معقد النطق</td></tr>
+          <tr><td><strong>Lettermark</strong></td><td>أسماء طويلة، شركات راسخة</td><td>لا تزال غير معروفة في السوق</td></tr>
+          <tr><td><strong>Abstract</strong></td><td>الشركات الكبرى ذات الانتشار العالمي</td><td>ميزانية تسويق محدودة</td></tr>
+          <tr><td><strong>Combination</strong></td><td>معظم الأعمال، المرونة الأعلى</td><td>تريد مرونة رمز منفصل فقط</td></tr>
+          <tr><td><strong>Emblem</strong></td><td>الفنادق، الجامعات، الرياضة، التراث</td><td>الاستخدام الرقمي الصغير</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sticky-note">
+        <div class="sticky-note-label">📝 ملاحظة مهمة للمبتدئين</div>
+        <p>كثير من المبتدئين يختارون نوع اللوجو بناءً على "ما يبدو أجمل". الاحترافي يختاره بناءً على طبيعة الكلاينت، وجمهوره، ومكانه في السوق، وخطته التسويقية المستقبلية.</p>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>في ٦ أنواع رئيسية: Wordmark, Lettermark, Abstract, Pictorial, Combination, Emblem</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>اختيار النوع يعتمد على السياق التجاري وليس الذوق الشخصي</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>Combination Mark هو الخيار الأكثر مرونة للأعمال الجديدة</div>
+      </div>
+
+      <div class="quiz-section">
+        <div class="quiz-title">اختبار — <span>أنواع اللوجوهات</span></div>
+        <div class="quiz-subtitle">سؤالان للتحقق من الفهم</div>
+        <div class="quiz-q">
+          <div class="quiz-q-text">شعار IBM يُعتبر من النوع؟</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">أ</span> Wordmark</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,true)"><span class="quiz-opt-letter">ب</span> Lettermark</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">ج</span> Abstract Mark</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">د</span> Emblem</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-why-logos')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-types')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-branding-intro')">الفصل التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L4: مقدمة البراند -->
+    <div id="l-branding-intro" class="lesson-page" style="display:none"
+         data-chapter="٢ — البراند" data-title="مقدمة عن البراند" data-words="650">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الثاني · الدرس الأول</div>
+      <h1 class="lesson-title">مقدمة عن البراند</h1>
+      <p class="lesson-intro">قبل أن ترسم أي شيء، لازم أن تفهم ما تبنيه. البراند ليس شعاراً — إنه تجربة كاملة، شعور، وعد، وهوية متكاملة.</p>
+
+      <div class="def-card">
+        <div class="def-word">البراند (Brand)</div>
+        <div class="def-text">مجموع التصورات، المشاعر، والتوقعات التي يحملها الناس تجاه شركة أو منتج. البراند يعيش في عقول الناس، وليس في ملفات التصميم. هو الفرق بين "شركة كولا" و"كوكا كولا".</div>
+      </div>
+
+      <h2 class="content-h2">مكونات البراند الكامل</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">💎</span>
+          <div class="visual-card-title">القيم الجوهرية</div>
+          <div class="visual-card-desc">ما تؤمن به الشركة وما تقف من أجله</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🗣️</span>
+          <div class="visual-card-title">الصوت والنبرة</div>
+          <div class="visual-card-desc">كيف تتحدث وتتواصل مع جمهورها</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">👤</span>
+          <div class="visual-card-title">الشخصية</div>
+          <div class="visual-card-desc">لو كانت إنساناً، كيف ستكون طباعها؟</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">👁️</span>
+          <div class="visual-card-title">الهوية البصرية</div>
+          <div class="visual-card-desc">كل ما يُرى: اللوجو، الألوان، الخطوط</div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        "الناس لا يشترون المنتجات، يشترون القصص. لا يشترون العلامات التجارية، يشترون الانتماء."
+        <br><small style="color:var(--red);font-size:13px;font-style:normal;margin-top:8px;display:block">— Seth Godin، خبير التسويق</small>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>البراند هو المجموع الكلي لكل التصورات والمشاعر المرتبطة بالعلامة</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>يتكون من: القيم، الصوت، الشخصية، والهوية البصرية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>البراند يعيش في عقل الكلاينت، وليس في ملفات المتصمم</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-types')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-branding-intro')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-logo-vs-brand')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L5: اللوجو vs العلامة -->
+    <div id="l-logo-vs-brand" class="lesson-page" style="display:none"
+         data-chapter="٢ — البراند" data-title="اللوجو vs العلامة" data-words="600">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الثاني · الدرس الثاني</div>
+      <h1 class="lesson-title">الفرق بين اللوجو والبراند</h1>
+      <p class="lesson-intro">هذا هو أكثر سؤال يُسبب ارتباكاً للعملاء والمتصممين المبتدئين على حد سواء. الفهم الصحيح لهذا الفرق يُغيّر طريقة عملك وتسعيرك ومحادثاتك مع العملاء.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>العنصر</th>
+            <th>اللوجو (Logo)</th>
+            <th>البراند (Brand)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>التعريف</td><td>رمز بصري محدد</td><td>تجربة وتصور متكامل</td></tr>
+          <tr><td>الوجود</td><td>في ملفات التصميم</td><td>في عقول الناس</td></tr>
+          <tr><td>الإنشاء</td><td>يُصمَّم مرة وينتهي</td><td>يُبنى على مدار سنوات</td></tr>
+          <tr><td>القيمة</td><td>جزء من الهوية</td><td>الهوية الكاملة</td></tr>
+          <tr><td>المثال</td><td>تفاحة أبل المقضومة</td><td>"إبداع، بساطة، فخامة"</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-card">
+        <div class="info-card-title">🎯 للمتصمم المحترف</div>
+        <p>عندما يقول عميلك "أريد شعاراً"، سؤالك الأول لازم أن يكون: "هل لديك استراتيجية علامة تجارية؟" إذا لم يكن لديه، عرض عليه خدمة الهوية الكاملة — وهذا هو الفرق بين متصمم ومستشار بصري.</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-branding-intro')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-logo-vs-brand')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-design-principles')">الفصل التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L6: مبادئ التصميم -->
+    <div id="l-design-principles" class="lesson-page" style="display:none"
+         data-chapter="٣ — مبادئ التصميم" data-title="المبادئ الأساسية" data-words="800">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الثالث · الدرس الأول</div>
+      <h1 class="lesson-title">مبادئ التصميم الأساسية</h1>
+      <p class="lesson-intro">قبل كل أداة وقبل كل برنامج، في قواعد راسخة يعمل بها كل متصمم ناجح. هذه المبادئ هي "قواعد اللعبة" التي تُفرّق العشوائي عن المقصود، والهواية عن الاحتراف.</p>
+
+      <h2 class="content-h2">المبادئ الأساسية السبعة</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">١</div>
+          <div class="step-content">
+            <div class="step-title">التوازن (Balance)</div>
+            <div class="step-desc">توزيع العناصر البصرية بشكل يُعطي الاستقرار. يمكن أن يكون متماثلاً (محوراً) أو غير متماثل (ديناميكي).</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٢</div>
+          <div class="step-content">
+            <div class="step-title">التباين (Contrast)</div>
+            <div class="step-desc">الاختلاف الواضح بين العناصر يخلق التركيز والمقروئية. الخط الرفيع بجانب الغليظ، الداكن بجانب الفاتح.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٣</div>
+          <div class="step-content">
+            <div class="step-title">التكرار (Repetition)</div>
+            <div class="step-desc">تكرار عناصر معينة يبني التماسك والهوية. اللون نفسه، الشكل نفسه، الوزن نفسه.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٤</div>
+          <div class="step-content">
+            <div class="step-title">التسلسل الهرمي (Hierarchy)</div>
+            <div class="step-desc">توجيه عين المشاهد من الأهم إلى الأقل أهمية. ما الذي لازم أن يُرى أولاً؟</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٥</div>
+          <div class="step-content">
+            <div class="step-title">المحاذاة (Alignment)</div>
+            <div class="step-desc">كل عنصر يرتبط بصرياً بعنصر آخر. المحاذاة تخلق النظام والاحتراف حتى في أبسط التصاميم.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٦</div>
+          <div class="step-content">
+            <div class="step-title">التقارب (Proximity)</div>
+            <div class="step-desc">العناصر المرتبطة ببعضها لازم أن تكون قريبة من بعضها. التباعد يُشير للعلاقة بين العناصر.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٧</div>
+          <div class="step-content">
+            <div class="step-title">المساحة السلبية (White Space)</div>
+            <div class="step-desc">المساحة الفارغة ليست هدراً — إنها عنصر تصميمي قوي يُريح العين ويُبرز المحتوى المهم.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>المبادئ السبعة: التوازن، التباين، التكرار، الهرمية، المحاذاة، التقارب، المساحة السلبية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>هذه القواعد لا تُقيّد الإبداع — بل توجّهه</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>خرق القواعد عن قصد وعلم هو الإبداع — خرقها من جهل هو الخطأ</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-logo-vs-brand')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-design-principles')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-color-theory')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L7: نظرية الألوان -->
+    <div id="l-color-theory" class="lesson-page" style="display:none"
+         data-chapter="٣ — مبادئ التصميم" data-title="نظرية الألوان" data-words="900">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الثالث · الدرس الثاني</div>
+      <h1 class="lesson-title">نظرية الألوان في تصميم اللوجوهات</h1>
+      <p class="lesson-intro">الألوان لا تُزيّن فقط — تُقنع وتُحرّك وتُقرّر. ٩٣٪ من قرارات الشراء مرتبطة بالإدراك البصري، و٨٥٪ منها تتأثر باللون تحديداً.</p>
+
+      <h2 class="content-h2">دلالات الألوان الأساسية</h2>
+      <div class="visual-grid">
+        <div class="visual-card" style="border-top: 3px solid #e53935;">
+          <span class="visual-card-icon">🔴</span>
+          <div class="visual-card-title">الأحمر</div>
+          <div class="visual-card-desc">الطاقة، الإلحاح، الشغف، القوة. YouTube, Netflix, Coca-Cola</div>
+        </div>
+        <div class="visual-card" style="border-top: 3px solid #1976d2;">
+          <span class="visual-card-icon">🔵</span>
+          <div class="visual-card-title">الأزرق</div>
+          <div class="visual-card-desc">الثقة، الاحترافية، الهدوء، التقنية. Facebook, Samsung, Ford</div>
+        </div>
+        <div class="visual-card" style="border-top: 3px solid #388e3c;">
+          <span class="visual-card-icon">🟢</span>
+          <div class="visual-card-title">الأخضر</div>
+          <div class="visual-card-desc">الطبيعة، الصحة، النمو، الاستدامة. Starbucks, Whole Foods</div>
+        </div>
+        <div class="visual-card" style="border-top: 3px solid #f9a825;">
+          <span class="visual-card-icon">🟡</span>
+          <div class="visual-card-title">الأصفر</div>
+          <div class="visual-card-desc">التفاؤل، الانتباه، الإبداع، الطاقة. McDonald's, Snapchat</div>
+        </div>
+        <div class="visual-card" style="border-top: 3px solid #6a1b9a;">
+          <span class="visual-card-icon">🟣</span>
+          <div class="visual-card-title">البنفسجي</div>
+          <div class="visual-card-desc">الفخامة، الإبداع، الروحانية، الغرابة. Cadbury, Hallmark</div>
+        </div>
+        <div class="visual-card" style="border-top: 3px solid #212121;">
+          <span class="visual-card-icon">⚫</span>
+          <div class="visual-card-title">الأسود</div>
+          <div class="visual-card-desc">الرقي، التطور، الأناقة، القوة. Chanel, Apple, Nike</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">عجلة الألوان والتناسقات</h2>
+      <p class="content-p">تناسق الألوان في اللوجو يعتمد على علاقاتها في العجلة اللونية. في ثلاثة تناسقات رئيسية تُستخدم في التصميم المحترف:</p>
+      <ul class="styled-list">
+        <li><strong>الألوان المتكاملة (Complementary)</strong> — الألوان المقابلة في العجلة. تُعطي تباينًا قوياً وحيوياً.</li>
+        <li><strong>الألوان المتماثلة (Analogous)</strong> — الألوان المتجاورة في العجلة. تُعطي تناسقاً هادئاً ومريحاً.</li>
+        <li><strong>الثلاثي (Triadic)</strong> — ثلاثة ألوان متساوية المسافة. توازن بين التنوع والتناسق.</li>
+      </ul>
+
+      <div class="info-card">
+        <div class="info-card-title">⚠️ تحذير مهني</div>
+        <p>دلالات الألوان تختلف بين الثقافات! الأبيض في الغرب = نقاء، لكن في بعض الثقافات الآسيوية = الحداد. الأحمر في الصين = الحظ، في الغرب = الخطر. دائماً ابحث عن جمهورك المستهدف قبل اختيار اللون.</p>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الألوان تحمل دلالات نفسية قوية تؤثر على القرارات</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>التناسقات اللونية: متكاملة، متماثلة، ثلاثية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>دلالات الألوان ثقافية — تختلف من مكان لآخر</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-design-principles')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-color-theory')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-typography-basics')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L8: الطباعة الأساسية -->
+    <div id="l-typography-basics" class="lesson-page" style="display:none"
+         data-chapter="٣ — مبادئ التصميم" data-title="الطباعة الأساسية" data-words="800">
+      <div class="lesson-part-tag">✦ الجزء الأول — الأساسيات</div>
+      <div class="lesson-chapter-num">الفصل الثالث · الدرس الثالث</div>
+      <h1 class="lesson-title">أساسيات الطباعة في اللوجوهات</h1>
+      <p class="lesson-intro">الطباعة هي روح التصميم. الخط الذي تختاره لشعار ما يقول أشياء كثيرة قبل أن يقرأ أي أحد كلمة واحدة.</p>
+
+      <h2 class="content-h2">تصنيفات الخطوط الأساسية</h2>
+      <div class="font-showcase">
+        <div class="font-sample-big" style="font-family: Georgia, serif; font-weight: 700;">Serif</div>
+        <div class="font-sample-name">خطوط الشريف — التقليدية</div>
+        <div class="font-sample-detail" style="color:var(--white-dim)">لها "أرجل" في نهاية الحروف. تُوحي بالمصداقية والتراث والرسمية. Times New Roman, Garamond</div>
+      </div>
+      <div class="font-showcase">
+        <div class="font-sample-big" style="font-family: Helvetica, Arial, sans-serif; font-weight: 700;">Sans-Serif</div>
+        <div class="font-sample-name">خطوط السانس — العصرية</div>
+        <div class="font-sample-detail" style="color:var(--white-dim)">بدون "أرجل". تُوحي بالحداثة، النظافة، البساطة. Helvetica, Futura, Gill Sans</div>
+      </div>
+      <div class="font-showcase">
+        <div class="font-sample-big" style="font-family: 'Comic Sans MS', cursive; font-weight: 700; font-style: italic;">Script</div>
+        <div class="font-sample-name">خطوط السكريبت — الخطية</div>
+        <div class="font-sample-detail" style="color:var(--white-dim)">تُحاكي الكتابة اليدوية. تُوحي بالدفء، الأناقة، أو العفوية. تُستخدم بحذر شديد.</div>
+      </div>
+
+      <h2 class="content-h2">مصطلحات الطباعة الأساسية</h2>
+      <table class="compare-table">
+        <thead><tr><th>المصطلح</th><th>التعريف</th><th>التأثير</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kerning</strong></td><td>المسافة بين حرفين محددين</td><td>يؤثر على التوازن الدقيق للكلمة</td></tr>
+          <tr><td><strong>Tracking</strong></td><td>المسافة بين كل الحروف بشكل موحد</td><td>يؤثر على كثافة النص وأناقته</td></tr>
+          <tr><td><strong>Leading</strong></td><td>المسافة الرأسية بين الأسطر</td><td>يؤثر على قابلية القراءة والتنفس</td></tr>
+          <tr><td><strong>Weight</strong></td><td>ثقل أو رفاعة الخط (Bold, Light, Regular)</td><td>يُحدد الهرمية والأهمية</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sticky-note">
+        <div class="sticky-note-label">تمرين عملي</div>
+        <p>خذ نفس الكلمة (مثلاً اسمك) واكتبها بخط Serif، ثم Sans-Serif، ثم Script. لاحظ كيف تتغير الشخصية والإحساس مع كل خط — هذه هي قوة الطباعة.</p>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>ثلاثة تصنيفات رئيسية: Serif (تقليدي)، Sans-Serif (عصري)، Script (خطي)</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>Kerning، Tracking، Leading هي أدوات الضبط الدقيق للطباعة</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>اختيار الخط قرار استراتيجي، وليس تفضيلاً شخصياً</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-color-theory')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-typography-basics')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-process')">الجزء الثاني ←</button>
+      </div>
+    </div>
+
+    <!-- L9: الطريقة الاحترافية -->
+    <div id="l-process" class="lesson-page" style="display:none"
+         data-chapter="٤ — الطريقة الاحترافية" data-title="مراحل التصميم" data-words="1000">
+      <div class="lesson-part-tag">✦ الجزء الثاني — تصميم اللوجوهات</div>
+      <div class="lesson-chapter-num">الفصل الرابع · الدرس الأول</div>
+      <h1 class="lesson-title">الطريقة الاحترافية لتصميم اللوجوهات</h1>
+      <p class="lesson-intro">المتصمم الاحترافي لا يفتح Illustrator مباشرةً — إنه يمر بمراحل منهجية قبل أن يُحرّك قلمه الرقمي. هذه العملية هي ما يُميّز العمل الاستراتيجي عن التصميم العشوائي.</p>
+
+      <div class="info-card">
+        <div class="info-card-title">⏱ الوقت الحقيقي</div>
+        <p>مشروع هوية بصرية احترافي يستغرق بين أسبوعين إلى ستة أسابيع. من يعمل أسرع عادةً يتجاوز مراحل البحث — وهذا يظهر في جودة النتيجة النهائية.</p>
+      </div>
+
+      <h2 class="content-h2">المراحل الست للعملية الاحترافية</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">١</div>
+          <div class="step-content">
+            <div class="step-title">الاكتشاف (Discovery)</div>
+            <div class="step-desc">جلسة استماع عميق مع الكلاينت. فهم القيم، الجمهور، الرسالة، المنافسين، والطموحات. هذه المرحلة تُحدد كل ما يأتي بعدها.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٢</div>
+          <div class="step-content">
+            <div class="step-title">البحث والتحليل (Research)</div>
+            <div class="step-desc">تحليل المنافسين، دراسة المجال، جمع المراجع البصرية، بناء مزاج بصري (Moodboard). الهدف: فهم "اللغة البصرية" للقطاع.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٣</div>
+          <div class="step-content">
+            <div class="step-title">التفكير والتخطيط (Strategy)</div>
+            <div class="step-desc">ترجمة البحث إلى قرارات تصميمية. ما الكلمات الرئيسية؟ ما الشخصية؟ ما الاتجاه البصري؟ هذه "خريطة" المشروع.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٤</div>
+          <div class="step-content">
+            <div class="step-title">التخطيط والرسم (Sketching)</div>
+            <div class="step-desc">على الورق أولاً! عشرات الأفكار بسرعة، استكشاف الاتجاهات المختلفة. الهدف الكمية لا الجودة في هذه المرحلة.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٥</div>
+          <div class="step-content">
+            <div class="step-title">التصميم الرقمي (Digital Design)</div>
+            <div class="step-desc">الآن فقط تفتح Illustrator. تحويل أفضل ٣-٥ أفكار من الورق إلى شكل رقمي. تطوير وتنقيح كل فكرة.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٦</div>
+          <div class="step-content">
+            <div class="step-title">التقديم والتسليم (Presentation & Delivery)</div>
+            <div class="step-desc">تقديم الخيارات بشكل احترافية مع المبررات. التعامل مع التعليقات. التسليم النهائي بكل الصيغ والمقاسات.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        "إذا أعطيتك ساعة لقطع شجرة، سأقضي ٤٥ دقيقة في شحذ فأسي."
+        <br><small style="color:var(--red);font-size:13px;font-style:normal;margin-top:8px;display:block">— أبراهام لينكولن (عن أهمية التحضير قبل التنفيذ)</small>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الطريقة الاحترافية: اكتشاف → بحث → استراتيجية → رسم → تصميم → تسليم</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الرسم على الورق أولاً — Illustrator يأتي لاحقاً</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>البحث هو أهم مرحلة — لا تتجاوزها أبداً</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-typography-basics')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-process')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-research')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L10: البحث -->
+    <div id="l-research" class="lesson-page" style="display:none"
+         data-chapter="٤ — الطريقة الاحترافية" data-title="البحث والتحليل" data-words="850">
+      <div class="lesson-part-tag">✦ الجزء الثاني — تصميم اللوجوهات</div>
+      <div class="lesson-chapter-num">الفصل الرابع · الدرس الثاني</div>
+      <h1 class="lesson-title">البحث والتحليل الاحترافي</h1>
+      <p class="lesson-intro">المتصمم الذي لا يبحث، يخمّن. والتخمين في التصميم التجاري يكلفك عميلك ومسيرتك. تعلّم كيف تبني أساساً معرفياً قوياً لكل مشروع.</p>
+
+      <h2 class="content-h2">تحليل المنافسين</h2>
+      <p class="content-p">قبل أي مشروع، ادرس ما لا تقل عن ٥-١٠ شعارات منافسة. لا لتقليدها — بل لتفهم "اللغة البصرية" لهذا القطاع وتتجنب التشابه غير المقصود.</p>
+      <ul class="styled-list">
+        <li>ما الألوان السائدة في هذا المجال؟</li>
+        <li>ما أنواع اللوجوهات الأكثر استخداماً؟</li>
+        <li>ما الكليشيهات البصرية التي لازم تجنبها؟</li>
+        <li>أين الفراغ البصري الذي يمكنني ملؤه؟</li>
+      </ul>
+
+      <h2 class="content-h2">بناء الـ Moodboard</h2>
+      <p class="content-p">Moodboard أو "لوحة المزاج" هي مجموعة مرجعية من الصور، الألوان، الخطوط، واللوجوهات التي تعكس الاتجاه البصري المطلوب. إنها أداة تواصل بينك وبين الكلاينت قبل أن تُنفق ساعات في التصميم.</p>
+
+      <div class="info-card">
+        <div class="info-card-title">🛠 أدوات البحث المفضلة</div>
+        <p>Pinterest للمراجع البصرية — Behance لمشاريع المتصممين الآخرين — Brand New لتحليل هويات جديدة — Typewolf للإلهام الطباعي — Google Images للمنافسين المحليين.</p>
+      </div>
+
+      <h2 class="content-h2">الكلمات المفتاحية للمشروع</h2>
+      <p class="content-p">قبل أي تصميم، اكتب ٥-١٠ كلمات تصف شخصية البراند. مثلاً: "جريء، حديث، موثوق، حيوي، ذكي". هذه الكلمات ستكون مرجعك طوال المشروع عند كل قرار تصميمي.</p>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>حلّل ١٠+ منافسين قبل البدء — تعرّف على اللغة البصرية للقطاع</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>Moodboard يوفر الوقت ويمنع الخلافات مع الكلاينت</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الكلمات المفتاحية هي بوصلتك طوال المشروع</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-process')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-research')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-psychology')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L11: سيكولوجية اللوجوهات -->
+    <div id="l-psychology" class="lesson-page" style="display:none"
+         data-chapter="٤ — الطريقة الاحترافية" data-title="سيكولوجية اللوجوهات" data-words="750">
+      <div class="lesson-part-tag">✦ الجزء الثاني — تصميم اللوجوهات</div>
+      <div class="lesson-chapter-num">الفصل الرابع · الدرس الثالث</div>
+      <h1 class="lesson-title">سيكولوجية اللوجوهات</h1>
+      <p class="lesson-intro">كل شكل، لون، وخط له تأثير نفسي مُثبَت علمياً على المشاهد. المتصمم الاحترافي يستخدم هذه المعرفة كأداة استراتيجية.</p>
+
+      <h2 class="content-h2">تأثيرات الأشكال</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">⭕</span>
+          <div class="visual-card-title">الدائرة والبيضاوي</div>
+          <div class="visual-card-desc">الوحدة، الكمال، الاستمرارية، الدفء، الشمولية</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">⬛</span>
+          <div class="visual-card-title">المربع والمستطيل</div>
+          <div class="visual-card-desc">الاستقرار، الثقة، الاحترافية، القوة، النظام</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🔺</span>
+          <div class="visual-card-title">المثلث</div>
+          <div class="visual-card-desc">التوازن، الحركة، الطموح، القوة — الاتجاه يُغيّر المعنى</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">↗️</span>
+          <div class="visual-card-title">الخطوط والزوايا</div>
+          <div class="visual-card-desc">الأفقية: هدوء. العمودية: قوة. المائلة: حركة وديناميكية</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">المساحة السلبية كأداة إبداعية</h2>
+      <p class="content-p">المساحة السلبية (Negative Space) هي الفراغ بين وداخل العناصر. المتصممون المحترفون يستخدمونها لإخفاء معنىً ثانٍ داخل اللوجو — مما يُعطيه عمقاً وإبداعاً مُدهشاً.</p>
+      <div class="info-card">
+        <div class="info-card-title">🎯 أمثلة شهيرة</div>
+        <p>شعار FedEx يخفي سهماً بين حرفي E و x — كناية عن السرعة والدقة. شعار NBC يخفي طيوراً في دائرة الألوان. شعار Amazon يخفي ابتسامة تشير من A إلى Z — يعني "كل شيء".</p>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الدائرة: وحدة. المربع: استقرار. المثلث: حركة وطموح</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>المساحة السلبية أداة إبداعية لإخفاء معانٍ إضافية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>كل قرار شكلي هو قرار نفسي يُؤثر على إدراك المشاهد</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-research')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-psychology')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-geometry')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L12: الهندسة -->
+    <div id="l-geometry" class="lesson-page" style="display:none"
+         data-chapter="٥ — بناء اللوجو" data-title="الهندسة في اللوجوهات" data-words="750">
+      <div class="lesson-part-tag">✦ الجزء الثاني — تصميم اللوجوهات</div>
+      <div class="lesson-chapter-num">الفصل الخامس · الدرس الأول</div>
+      <h1 class="lesson-title">الهندسة في بناء اللوجوهات</h1>
+      <p class="lesson-intro">اللوجوهات الخالدة مبنية على أُسس هندسية محكمة. النسب الذهبية، الدوائر المتداخلة، والشبكات الهندسية — هذه ليست حيل أكاديمية، بل أدوات للوصول إلى الكمال البصري.</p>
+
+      <h2 class="content-h2">النسبة الذهبية (Golden Ratio)</h2>
+      <p class="content-p">النسبة الذهبية ١.٦١٨ — تُوجد في الطبيعة من حلزون الصدفة إلى تناسق الوجه البشري. استخدامها في اللوجو يُعطيه "إحساساً صحيحاً" بشكل يصعب تفسيره.</p>
+
+      <div class="svg-diagram">
+        <svg viewBox="0 0 500 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="123" height="180" rx="4" fill="rgba(214,0,28,0.15)" stroke="rgba(214,0,28,0.5)" stroke-width="1.5"/>
+          <rect x="143" y="10" width="76" height="111" rx="4" fill="rgba(214,0,28,0.1)" stroke="rgba(214,0,28,0.4)" stroke-width="1"/>
+          <rect x="229" y="10" width="47" height="68" rx="4" fill="rgba(214,0,28,0.08)" stroke="rgba(214,0,28,0.3)" stroke-width="1"/>
+          <rect x="143" y="131" width="76" height="59" rx="4" fill="rgba(214,0,28,0.06)" stroke="rgba(214,0,28,0.25)" stroke-width="1"/>
+          <text x="72" y="106" fill="rgba(245,245,240,0.8)" font-size="16" font-weight="700" text-anchor="middle" font-family="Cairo">١</text>
+          <text x="181" y="72" fill="rgba(245,245,240,0.6)" font-size="13" text-anchor="middle" font-family="Cairo">١/φ</text>
+          <text x="360" y="106" fill="rgba(245,245,240,0.7)" font-size="13" font-family="Cairo" direction="rtl">النسبة الذهبية</text>
+          <text x="360" y="125" fill="rgba(214,0,28,0.9)" font-size="18" font-weight="800" font-family="Cairo" direction="rtl">φ = 1.618</text>
+        </svg>
+      </div>
+
+      <h2 class="content-h2">الدوائر والتناسق</h2>
+      <p class="content-p">كثير من المتصممين المحترفين يبنون اللوجوهات باستخدام دوائر متداخلة بنسب محددة. هذا يضمن أن كل منحنى في اللوجو متناسق مع الباقي. شعار BMW، BMW، وشعار Audi مبنيان كلياً على هذا المبدأ.</p>
+
+      <div class="info-card">
+        <div class="info-card-title">🔵 تمرين الدوائر</div>
+        <p>افتح Illustrator، ارسم دائرة كبيرة، ثم ارسم دائرة أصغر بنسبة ١:١.٦١٨. كرّر العملية. لاحظ كيف تبدو مجموعة الدوائر متناسقة تلقائياً. هذا المبدأ يُطبَّق في تصميم شعار Apple وكثير من اللوجوهات الكبرى.</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-psychology')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-geometry')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-grid')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L13: أنظمة الشبكة -->
+    <div id="l-grid" class="lesson-page" style="display:none"
+         data-chapter="٥ — بناء اللوجو" data-title="أنظمة الشبكة" data-words="700">
+      <div class="lesson-part-tag">✦ الجزء الثاني — تصميم اللوجوهات</div>
+      <div class="lesson-chapter-num">الفصل الخامس · الدرس الثاني</div>
+      <h1 class="lesson-title">أنظمة الشبكة في اللوجوهات</h1>
+      <p class="lesson-intro">الشبكة (Grid) ليست قيداً — إنها هيكل يُتيح لك الحرية الكاملة داخل نظام مُحكم. اللوجوهات المبنية على شبكات دقيقة تبدو "صحيحة" حتى لغير المتصممين.</p>
+
+      <h2 class="content-h2">أنواع الشبكات المستخدمة</h2>
+      <ul class="num-list">
+        <li><strong>الشبكة المربعة</strong> — الأساسية والأكثر استخداماً. مثالية للشعارات الهندسية والرموز المتماثلة.</li>
+        <li><strong>الشبكة الدائرية</strong> — مبنية على دوائر متحدة المركز. مثالية للشعارات ذات الأشكال المنحنية.</li>
+        <li><strong>الشبكة الهندسية (Isometric)</strong> — مبنية على مثلثات بزاوية ٦٠ درجة. تُعطي عمقاً وإيهاماً بالثلاثية.</li>
+      </ul>
+
+      <h2 class="content-h2">كيف تستخدم الشبكة عملياً</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">١</div>
+          <div class="step-content">
+            <div class="step-title">حدّد حجم الوحدة الأساسية</div>
+            <div class="step-desc">اختر وحدة قياس أساسية (مثلاً ١٠ بكسل). كل عنصر في شعارك لازم أن يكون مضاعفاً لهذه الوحدة.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٢</div>
+          <div class="step-content">
+            <div class="step-title">ارسم الشبكة على Illustrator</div>
+            <div class="step-desc">فعّل الـ Grid من View > Show Grid، ثم اضبط إعداداته من Preferences > Guides & Grid.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٣</div>
+          <div class="step-content">
+            <div class="step-title">ألصق كل عنصر بالشبكة</div>
+            <div class="step-desc">فعّل Snap to Grid. الآن كل حركة ستكون دقيقة ومتناسقة تلقائياً.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-geometry')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-grid')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-negative-space')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L14: المساحة السلبية -->
+    <div id="l-negative-space" class="lesson-page" style="display:none"
+         data-chapter="٥ — بناء اللوجو" data-title="المساحة السلبية" data-words="700">
+      <div class="lesson-part-tag">✦ الجزء الثاني — تصميم اللوجوهات</div>
+      <div class="lesson-chapter-num">الفصل الخامس · الدرس الثالث</div>
+      <h1 class="lesson-title">إتقان المساحة السلبية</h1>
+      <p class="lesson-intro">المساحة السلبية هي فن "الرسم بالفراغ". اللوجوهات التي تستخدمها ببراعة تبقى في الذاكرة لسنوات — وتُصبح مثاراً للحديث والإعجاب.</p>
+
+      <h2 class="content-h2">تقنيات المساحة السلبية</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">🔍</span>
+          <div class="visual-card-title">الشكل المخفي</div>
+          <div class="visual-card-desc">إخفاء شكل ثانٍ داخل المساحة بين العناصر (مثل سهم FedEx)</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">✂️</span>
+          <div class="visual-card-title">القص والتداخل</div>
+          <div class="visual-card-desc">تداخل شكلين يخلق شكلاً ثالثاً في مناطق التقاطع</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">⚡</span>
+          <div class="visual-card-title">المحيط الإيجابي</div>
+          <div class="visual-card-desc">الفراغ حول شكل يُشكّل شكلاً آخر معناه مكمّل للأول</div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        "لا أُصمّم الشكل — أُصمّم الفراغ الذي يُحيط به. الشكل ينبثق من تلقاء نفسه."
+      </div>
+
+      <div class="sticky-note">
+        <div class="sticky-note-label">تمرين — المساحة السلبية</div>
+        <p>ارسم حرف "E" واجعل الفراغات بين الخطوط الأفقية تُكوّن حرف "F" (مثلاً). هذا بالضبط ما صنعه متصمم شعار FedEx — بحث طويل عن زوج مثالي من الأحرف يخلق شكل سهم في المنتصف.</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-grid')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-negative-space')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-brand-identity')">الجزء الثالث ←</button>
+      </div>
+    </div>
+
+    <!-- L15: الهوية البصرية -->
+    <div id="l-brand-identity" class="lesson-page" style="display:none"
+         data-chapter="٦ — استراتيجية البراند" data-title="يعني ايه هوية بصرية؟" data-words="850">
+      <div class="lesson-part-tag">✦ الجزء الثالث — الهوية البصرية</div>
+      <div class="lesson-chapter-num">الفصل السادس · الدرس الأول</div>
+      <h1 class="lesson-title">ما هي الهوية البصرية المتكاملة؟</h1>
+      <p class="lesson-intro">الهوية البصرية ليست مجرد شعار جميل — إنها نظام بصري متكامل يُطبَّق على كل نقطة تواصل مع الجمهور، من بطاقة العمل إلى حسابات التواصل الاجتماعي.</p>
+
+      <h2 class="content-h2">مكونات الهوية البصرية</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">🎯</span>
+          <div class="visual-card-title">اللوجو</div>
+          <div class="visual-card-desc">العنصر الأساسي — بنسخه المختلفة (رئيسي، أبيض، أسود، مصغّر)</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🎨</span>
+          <div class="visual-card-title">نظام الألوان</div>
+          <div class="visual-card-desc">الألوان الرئيسية والثانوية مع كودات HEX, RGB, CMYK, Pantone</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">📖</span>
+          <div class="visual-card-title">نظام الخطوط</div>
+          <div class="visual-card-desc">خط العناوين، خط النص، مع قواعد الاستخدام</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">📐</span>
+          <div class="visual-card-title">نظام الأيقونات</div>
+          <div class="visual-card-desc">مجموعة أيقونات متسقة الأسلوب البصري</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🖼️</span>
+          <div class="visual-card-title">أسلوب الصور</div>
+          <div class="visual-card-desc">معايير وتوجيهات اختيار الصور والمعالجة البصرية</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">📱</span>
+          <div class="visual-card-title">التطبيقات</div>
+          <div class="visual-card-desc">كيف تُطبَّق الهوية على بطاقات، سوشيال ميديا، تغليف...</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">لماذا الاتساق البصري مهم جداً؟</h2>
+      <p class="content-p">الدراسات تُثبت أن الاتساق في الهوية البصرية يزيد من التعرّف على العلامة بنسبة تصل إلى <strong style="color:var(--red)">٨٠٪</strong>. عندما يرى الجمهور نفس الأسلوب البصري عبر كل نقطة تواصل، يبني ثقة لا واعية بالبراند.</p>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الهوية البصرية نظام — وليست مجرد شعار</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>مكوناتها: اللوجو، الألوان، الخطوط، الأيقونات، أسلوب الصور</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الاتساق يزيد التعرف بنسبة ٨٠٪ ويبني ثقة غير واعية</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-negative-space')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-brand-identity')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-brand-strategy')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L16: استراتيجية العلامة -->
+    <div id="l-brand-strategy" class="lesson-page" style="display:none"
+         data-chapter="٦ — استراتيجية البراند" data-title="استراتيجية العلامة" data-words="800">
+      <div class="lesson-part-tag">✦ الجزء الثالث — الهوية البصرية</div>
+      <div class="lesson-chapter-num">الفصل السادس · الدرس الثاني</div>
+      <h1 class="lesson-title">استراتيجية البراند</h1>
+      <p class="lesson-intro">التصميم بدون استراتيجية هو مجرد فن. الاستراتيجية تحوّل التصميم إلى أداة تجارية فعّالة تُحقق أهدافاً قابلة للقياس.</p>
+
+      <h2 class="content-h2">أعمدة الاستراتيجية</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">🎯</span>
+          <div class="visual-card-title">تحديد المكانة</div>
+          <div class="visual-card-desc">ما الفراغ في السوق الذي تملؤه هذه العلامة؟ ما الذي تفعله بشكل مختلف؟</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">👤</span>
+          <div class="visual-card-title">شخصية البراند</div>
+          <div class="visual-card-desc">لو كانت شركة إنساناً — من سيكون؟ جاد أم مرح؟ متحفظ أم جريء؟</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">💬</span>
+          <div class="visual-card-title">صوت العلامة</div>
+          <div class="visual-card-desc">كيف تتحدث؟ رسمي، ودود، خبير، ساخر؟ يُطبَّق في كل محتوى</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">✨</span>
+          <div class="visual-card-title">قيم العلامة</div>
+          <div class="visual-card-desc">ما الذي تؤمن به وتدافع عنه؟ هذا ما يُبني الولاء الحقيقي</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">الـ Brand Positioning Statement</h2>
+      <p class="content-p">وثيقة قصيرة (جملتان إلى فقرة) تُعرّف: من نحن، لمن نخدم، ما نقدمه، وما يُميّزنا. كل قرار تصميمي لازم أن يُجاب بالرجوع لهذه الوثيقة.</p>
+
+      <div class="def-card">
+        <div class="def-word">نموذج الـ Positioning</div>
+        <div class="def-text">
+          "لـ [الناس اللي مستهدفهم] الذي يريد [الحاجة الأساسية]، نحن [اسم العلامة] نُقدّم [الحل] بشكل [المميّز الجوهري]."
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-brand-identity')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-brand-strategy')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-brand-guidelines')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L17: Brand Guidelines -->
+    <div id="l-brand-guidelines" class="lesson-page" style="display:none"
+         data-chapter="٦ — استراتيجية البراند" data-title="دليل البراند" data-words="900">
+      <div class="lesson-part-tag">✦ الجزء الثالث — الهوية البصرية</div>
+      <div class="lesson-chapter-num">الفصل السادس · الدرس الثالث</div>
+      <h1 class="lesson-title">دليل البراند (Brand Guidelines)</h1>
+      <p class="lesson-intro">الدليل هو "دستور" البراند — وثيقة شاملة تضمن أن أي شخص (متصمم، موظف، وكالة) يُطبّق الهوية البصرية بشكل صحيح ومتسق.</p>
+
+      <h2 class="content-h2">ما لازم أن يحتويه الدليل</h2>
+      <ul class="num-list">
+        <li><strong>مقدمة العلامة</strong> — القصة، القيم، الرسالة، الشخصية</li>
+        <li><strong>استخدامات اللوجو</strong> — النسخ المختلفة، المسافات الأمان، الحد الأدنى للحجم</li>
+        <li><strong>الاستخدامات المحظورة</strong> — ما لا يجوز فعله باللوجو أبداً</li>
+        <li><strong>نظام الألوان</strong> — الكودات بكل الأنظمة: HEX, RGB, CMYK, Pantone</li>
+        <li><strong>نظام الخطوط</strong> — الخطوط، الأوزان، الأحجام، الهرمية</li>
+        <li><strong>أمثلة التطبيق</strong> — كيف تبدو الهوية في بطاقات الأعمال، السوشيال ميديا، إلخ</li>
+        <li><strong>أسلوب الصور</strong> — معايير اختيار الصور والتصوير</li>
+        <li><strong>النبرة الكتابية</strong> — توجيهات للمحتوى والكتابة</li>
+      </ul>
+
+      <div class="info-card">
+        <div class="info-card-title">💰 القيمة الحقيقية للدليل</div>
+        <p>الدليل يحول اللوجو من "صورة" إلى "نظام". الشركات ذات الأدلة المتكاملة تُقدَّر قيمتها التسويقية بأضعاف مضاعفة. إنه جزء لا يتجزأ من حزمة الهوية الاحترافية — وهو ما يُبرر رفع أسعارك بشكل كبير.</p>
+      </div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الدليل "دستور" الهوية — يضمن الاتساق مع أي شخص يستخدمها</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>يشمل: اللوجو، الألوان، الخطوط، أسلوب الصور، والتطبيقات</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>تقديم دليل شامل مع كل مشروع هوية = رفع قيمتك المهنية</div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-brand-strategy')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-brand-guidelines')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-typography-adv')">الفصل التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L18: الطباعة المتقدمة -->
+    <div id="l-typography-adv" class="lesson-page" style="display:none"
+         data-chapter="٧ — الطباعة المتقدمة" data-title="أسس الطباعة المتقدمة" data-words="800">
+      <div class="lesson-part-tag">✦ الجزء الثالث — الهوية البصرية</div>
+      <div class="lesson-chapter-num">الفصل السابع · الدرس الأول</div>
+      <h1 class="lesson-title">أسس الطباعة المتقدمة</h1>
+      <p class="lesson-intro">الطباعة تُشكّل ٩٥٪ من أي تصميم رقمي. المتصمم الذي يُتقن الطباعة يُتقن التصميم. هذا الدرس ينقلك من "اختيار خط" إلى "بناء نظام طباعي" متكامل.</p>
+
+      <h2 class="content-h2">الهرمية الطباعية</h2>
+      <p class="content-p">الهرمية توجّه عين القارئ — من الأهم إلى الأقل أهمية. في أي تصميم، لازم أن تكون في ثلاثة مستويات واضحة على الأقل:</p>
+      <ul class="styled-list">
+        <li><strong>H1 — العنوان الرئيسي:</strong> الأكبر والأجرأ. أول ما تقع عليه العين.</li>
+        <li><strong>H2 — العنوان الفرعي:</strong> يُكمل الرئيسي ويُعطي سياقاً إضافياً.</li>
+        <li><strong>Body — النص الأساسي:</strong> أصغر حجماً وأهدأ وزناً. سهل القراءة لفترات طويلة.</li>
+      </ul>
+
+      <h2 class="content-h2">ضبط الحروف باحتراف</h2>
+      <table class="compare-table">
+        <thead><tr><th>الأداة</th><th>التعريف</th><th>متى تستخدمه؟</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Kerning</strong></td><td>ضبط المسافة بين حرفين محددين</td><td>في العناوين واللوجوهات الكبيرة</td></tr>
+          <tr><td><strong>Tracking</strong></td><td>ضبط المسافة بين كل الحروف</td><td>للنصوص الصغيرة Uppercase</td></tr>
+          <tr><td><strong>Leading</strong></td><td>المسافة العمودية بين الأسطر</td><td>١.٤-١.٦ للنصوص الطويلة</td></tr>
+          <tr><td><strong>Baseline Shift</strong></td><td>رفع أو خفض حرف عن الخط الأساسي</td><td>للتأثيرات الإبداعية في العناوين</td></tr>
+        </tbody>
+      </table>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-brand-guidelines')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-typography-adv')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-font-pairing')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L19: تناسق الخطوط -->
+    <div id="l-font-pairing" class="lesson-page" style="display:none"
+         data-chapter="٧ — الطباعة المتقدمة" data-title="تناسق الخطوط" data-words="700">
+      <div class="lesson-part-tag">✦ الجزء الثالث — الهوية البصرية</div>
+      <div class="lesson-chapter-num">الفصل السابع · الدرس الثاني</div>
+      <h1 class="lesson-title">فن تناسق الخطوط</h1>
+      <p class="lesson-intro">اختيار خطين يعملان معاً هو فن قائم بذاته. التناسق الصحيح يُبرز الاحتراف — الخاطئ يُشتت الانتباه ويُفقد التصميم هويته.</p>
+
+      <h2 class="content-h2">قواعد التناسق الطباعي</h2>
+      <ul class="num-list">
+        <li><strong>الاختلاف الواضح</strong> — اختر خطين مختلفين بوضوح في الشخصية. خط Serif مع Sans-Serif يعمل لأنهما مختلفان جوهرياً.</li>
+        <li><strong>التشابه في الروح</strong> — رغم الاختلاف، لازم أن يشتركا في "مزاج" مشابه. خط رياضي جريء مع خط أنيق لن يعمل.</li>
+        <li><strong>الهرمية الواضحة</strong> — خط واحد للعناوين والآخر للنص. لا تعكس هذا القرار أبداً بنفس التصميم.</li>
+        <li><strong>لا تتجاوز خطين</strong> — في معظم التصاميم، خطان كافيان تماماً. الثالث يُعقّد النظام ويُشتت العين.</li>
+      </ul>
+
+      <h2 class="content-h2">أزواج كلاسيكية تعمل دائماً</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <div class="visual-card-title">Playfair Display</div>
+          <div class="visual-card-desc">مع Source Sans Pro — تقليدي أنيق للعلامات الفاخرة</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-title">Montserrat</div>
+          <div class="visual-card-desc">مع Merriweather — عصري مع عمق، للمنصات الرقمية</div>
+        </div>
+        <div class="visual-card">
+          <div class="visual-card-title">Oswald</div>
+          <div class="visual-card-desc">مع Lato — جريء مكثف للهويات الرياضية والحيوية</div>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-typography-adv')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-font-pairing')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-logotype')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L20: اللوغوتايب -->
+    <div id="l-logotype" class="lesson-page" style="display:none"
+         data-chapter="٧ — الطباعة المتقدمة" data-title="تصميم الخط اللوغوتايب" data-words="700">
+      <div class="lesson-part-tag">✦ الجزء الثالث — الهوية البصرية</div>
+      <div class="lesson-chapter-num">الفصل السابع · الدرس الثالث</div>
+      <h1 class="lesson-title">تصميم الخط اللوغوتايب</h1>
+      <p class="lesson-intro">اللوغوتايب هو أعلى درجات تصميم الخط — كتابة اسم العلامة بخط متصمم من الصفر خصيصاً لها. Google، Coca-Cola، Disney — كلها لوغوتايبات فريدة لا تُشبه أي خط آخر.</p>
+
+      <h2 class="content-h2">مراحل تصميم اللوغوتايب</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">١</div>
+          <div class="step-content">
+            <div class="step-title">ابدأ بخط موجود</div>
+            <div class="step-desc">لا أحد يبدأ من الصفر. اختر خطاً يُقارب الاتجاه المطلوب واستخدمه كنقطة انطلاق.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٢</div>
+          <div class="step-content">
+            <div class="step-title">حوّله إلى Outlines</div>
+            <div class="step-desc">في Illustrator: Type > Create Outlines. الآن الكلمة أصبحت مسارات قابلة للتعديل.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٣</div>
+          <div class="step-content">
+            <div class="step-title">اضبط الـ Kerning اليدوي</div>
+            <div class="step-desc">ضبط المسافات بين الحروف يدوياً حتى تبدو "صحيحة" بصرياً، ليس رياضياً.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٤</div>
+          <div class="step-content">
+            <div class="step-title">أضف شخصيتك</div>
+            <div class="step-desc">عدّل نهايات بعض الحروف، غيّر سُمك جزء منها، أضف تفاصيل مميزة تجعلها فريدة.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-font-pairing')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-logotype')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-brief')">الجزء الرابع ←</button>
+      </div>
+    </div>
+
+    <!-- L21: البريف -->
+    <div id="l-brief" class="lesson-page" style="display:none"
+         data-chapter="٨ — العمل المهني" data-title="فهم البريف" data-words="800">
+      <div class="lesson-part-tag">✦ الجزء الرابع — العمل مع العملاء</div>
+      <div class="lesson-chapter-num">الفصل الثامن · الدرس الأول</div>
+      <h1 class="lesson-title">فهم وكتابة البريف الاحترافي</h1>
+      <p class="lesson-intro">البريف (Design Brief) هو عقدك غير الرسمي مع الكلاينت. وثيقة تُلخّص كل ما اتُّفق عليه وتُعطي إطاراً واضحاً للمشروع. غيابه هو مصدر ٩٠٪ من النزاعات بين المتصمم والكلاينت.</p>
+
+      <h2 class="content-h2">محتويات البريف الاحترافي</h2>
+      <ul class="num-list">
+        <li><strong>معلومات الكلاينت</strong> — اسم الشركة، النشاط، السوق المستهدف</li>
+        <li><strong>ملخص المشروع</strong> — ماذا نصمم؟ لماذا الآن؟ ما المشكلة التي نحلها؟</li>
+        <li><strong>الناس اللي مستهدفهم</strong> — من يستخدم هذه العلامة؟ العمر، الاهتمامات، الأهداف</li>
+        <li><strong>الشخصية المطلوبة</strong> — ٥ كلمات تصف كيف لازم أن تبدو الهوية</li>
+        <li><strong>المراجع البصرية</strong> — أمثلة يُعجب بها الكلاينت (وأمثلة لا يريدها)</li>
+        <li><strong>الحجم والصيغ</strong> — ما الذي سيُسلَّم بالضبط؟</li>
+        <li><strong>الجدول الزمني</strong> — المواعيد المحددة لكل مرحلة</li>
+        <li><strong>الميزانية والدفعات</strong> — المبلغ وطريقة الدفع</li>
+      </ul>
+
+      <div class="info-card">
+        <div class="info-card-title">⚡ نصيحة ذهبية</div>
+        <p>البريف لا تكتبه أنت وحدك — تبنيه مع الكلاينت في جلسة "اكتشاف" (Discovery Session). الأسئلة الصحيحة تُظهر لك ولعميلك ما يريده فعلاً، حتى لو لم يعرف كيف يُعبّر عنه.</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-logotype')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-brief')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-client-comm')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L22: التواصل مع الكلاينت -->
+    <div id="l-client-comm" class="lesson-page" style="display:none"
+         data-chapter="٨ — العمل المهني" data-title="التواصل مع الكلاينت" data-words="750">
+      <div class="lesson-part-tag">✦ الجزء الرابع — العمل مع العملاء</div>
+      <div class="lesson-chapter-num">الفصل الثامن · الدرس الثاني</div>
+      <h1 class="lesson-title">فن التواصل مع العملاء</h1>
+      <p class="lesson-intro">التصميم المهارة الصغرى — التواصل المهارة الكبرى. المتصمم الذي يُتقن التواصل يكسب عملاء مدى الحياة. الذي لا يُتقنه يخسرهم حتى لو كان تصميمه أجمل.</p>
+
+      <h2 class="content-h2">قواعد التواصل الاحترافي</h2>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">١</div>
+          <div class="step-content">
+            <div class="step-title">حدّد التوقعات مبكراً</div>
+            <div class="step-desc">قبل البدء، أوضح: عدد المراجعات المتاحة، وقت الرد، أسلوب التواصل المفضل، ما هو خارج نطاق العمل.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٢</div>
+          <div class="step-content">
+            <div class="step-title">كن استباقياً في التحديثات</div>
+            <div class="step-desc">لا تنتظر الكلاينت أن يسألك "كيف العمل؟". أرسل تحديثات دورية حتى لو لم تُنجز شيئاً مهماً بعد.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٣</div>
+          <div class="step-content">
+            <div class="step-title">وثّق كل قرار</div>
+            <div class="step-desc">أي تغيير أو موافقة يتم عبر رسالة مكتوبة. "قال لي شفهياً" لا يحميك عند الخلاف.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">٤</div>
+          <div class="step-content">
+            <div class="step-title">كن مستشاراً لا منفّذاً</div>
+            <div class="step-desc">عندما يطلب الكلاينت شيئاً خاطئاً مهنياً، قل له لماذا. المتصمم الذي يُنفذ فقط سيُستبدل بالذكاء الاصطناعي.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        "الكلاينت يدفع لك لتُحل له مشكلة — وليس لتُنفذ رغباته بلا نقاش."
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-brief')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-client-comm')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-presentation')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L23: تقديم العمل -->
+    <div id="l-presentation" class="lesson-page" style="display:none"
+         data-chapter="٨ — العمل المهني" data-title="تقديم العمل" data-words="800">
+      <div class="lesson-part-tag">✦ الجزء الرابع — العمل مع العملاء</div>
+      <div class="lesson-chapter-num">الفصل الثامن · الدرس الثالث</div>
+      <h1 class="lesson-title">فن تقديم العمل الاحترافي</h1>
+      <p class="lesson-intro">اللوجو الرائع الذي يُقدَّم بشكل رديئة سيُرفض. اللوجو الاحترافي المُقدَّم باحتراف سيُقبل ويُمجَّد. طريقة التقديم جزء لا يتجزأ من المنتج.</p>
+
+      <h2 class="content-h2">عناصر التقديم الاحترافي</h2>
+      <ul class="num-list">
+        <li><strong>السرد القصصي:</strong> قدّم كل خيار بـ"قصة" — لماذا هذا الاتجاه؟ كيف يعكس استراتيجية البراند؟</li>
+        <li><strong>السياق البصري:</strong> أظهر اللوجو على Mockups حقيقية (بطاقة أعمال، تيشيرت، موبايل) — لا على أرضية بيضاء فارغة.</li>
+        <li><strong>خيارات محدودة:</strong> قدّم ٢-٣ خيارات فقط — أكثر من ذلك يُشوّش القرار.</li>
+        <li><strong>المبررات:</strong> لكل قرار تصميمي (هذا اللون، هذا الخط) مبرر استراتيجي جاهز.</li>
+        <li><strong>التوجيه اللطيف:</strong> أخبر الكلاينت أيّ خيار تُفضّل وسبب — إنه يدفع لك لتكون خبيراً.</li>
+      </ul>
+
+      <div class="info-card">
+        <div class="info-card-title">🎨 أدوات الـ Mockup</div>
+        <p>Smartmockups.com، Mockup World، Anthony Boyd Graphics — مصادر رائعة لـ Mockups احترافية مجانية ومدفوعة. استثمر في Mockups جيدة — تُضاعف قيمة عرضك أمام الكلاينت.</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-client-comm')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-presentation')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-portfolio')">الجزء الخامس ←</button>
+      </div>
+    </div>
+
+    <!-- L24: البورتفوليو -->
+    <div id="l-portfolio" class="lesson-page" style="display:none"
+         data-chapter="٩ — بناء المسيرة المهنية" data-title="بناء بورتفوليو" data-words="850">
+      <div class="lesson-part-tag">✦ الجزء الخامس — الفريلانس والأعمال</div>
+      <div class="lesson-chapter-num">الفصل التاسع · الدرس الأول</div>
+      <h1 class="lesson-title">بناء بورتفوليو يُحضر العملاء</h1>
+      <p class="lesson-intro">البورتفوليو هو سلاحك التسويقي الأول. المتصمم الذي يملك بورتفوليو محترفاً يتحدث عنه قبل أن يقول كلمة واحدة.</p>
+
+      <h2 class="content-h2">ما لازم أن يحتويه البورتفوليو</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">🎯</span>
+          <div class="visual-card-title">قصة المشروع</div>
+          <div class="visual-card-desc">ليس فقط "قبل وبعد" — أخبر كيف توصّلت لهذا الحل</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🖼️</span>
+          <div class="visual-card-title">Mockups احترافية</div>
+          <div class="visual-card-desc">أظهر العمل في السياق الحقيقي، ليس على أرضية بيضاء</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">📋</span>
+          <div class="visual-card-title">البريف والاستراتيجية</div>
+          <div class="visual-card-desc">أظهر عملية تفكيرك — هذا ما يُفرّق المتصمم عن الأداة</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">⭐</span>
+          <div class="visual-card-title">أفضل ١٠ أعمال</div>
+          <div class="visual-card-desc">الجودة > الكمية دائماً. ٥ أعمال ممتازة خير من ٥٠ عادية</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">بيهانس vs موقع شخصي</h2>
+      <table class="compare-table">
+        <thead><tr><th></th><th>Behance</th><th>موقع شخصي</th></tr></thead>
+        <tbody>
+          <tr><td>الجمهور</td><td>مجتمع المتصممين</td><td>العملاء المحتملون</td></tr>
+          <tr><td>الاكتشاف</td><td>ممتاز — محرك بحث داخلي</td><td>يحتاج SEO وترويج</td></tr>
+          <tr><td>المصداقية</td><td>عالية في مجال التصميم</td><td>أعلى مع العملاء التجاريين</td></tr>
+          <tr><td>التوصية</td><td>ابدأ به</td><td>أضفه لاحقاً مع النضج</td></tr>
+        </tbody>
+      </table>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-presentation')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-portfolio')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-pricing')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L25: التسعير -->
+    <div id="l-pricing" class="lesson-page" style="display:none"
+         data-chapter="٩ — بناء المسيرة المهنية" data-title="تسعير المشاريع" data-words="950">
+      <div class="lesson-part-tag">✦ الجزء الخامس — الفريلانس والأعمال</div>
+      <div class="lesson-chapter-num">الفصل التاسع · الدرس الثاني</div>
+      <h1 class="lesson-title">تسعير مشاريع التصميم باحتراف</h1>
+      <p class="lesson-intro">التسعير الخاطئ أكثر ضرراً على مسيرتك من التصميم الضعيف. إليك نظام تسعير احترافي مبني على القيمة، لا الوقت.</p>
+
+      <div class="def-card">
+        <div class="def-word">التسعير على أساس القيمة</div>
+        <div class="def-text">بدلاً من "أشحن بالساعة"، اسأل: ما القيمة التي يُحققها هذا اللوجو للعميل؟ شركة تتوقع مليون ريال مبيعات تدفع ١٠ آلاف بكل راحة — لأن الاستثمار منطقي.</div>
+      </div>
+
+      <h2 class="content-h2">نطاقات تسعير واقعية</h2>
+      <table class="compare-table">
+        <thead><tr><th>نوع المشروع</th><th>مبتدئ</th><th>متوسط</th><th>محترف</th></tr></thead>
+        <tbody>
+          <tr><td>شعار فقط</td><td>٥٠٠ - ١,٥٠٠ ريال</td><td>٢,٠٠٠ - ٥,٠٠٠</td><td>٨,٠٠٠ - ٢٠,٠٠٠+</td></tr>
+          <tr><td>هوية بصرية كاملة</td><td>١,٥٠٠ - ٤,٠٠٠</td><td>٦,٠٠٠ - ١٥,٠٠٠</td><td>٢٠,٠٠٠ - ٨٠,٠٠٠+</td></tr>
+          <tr><td>هوية + دليل</td><td>٣,٠٠٠ - ٧,٠٠٠</td><td>١٠,٠٠٠ - ٢٥,٠٠٠</td><td>٣٠,٠٠٠ - ١٠٠,٠٠٠+</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="content-h2">ما يزيد من قيمتك</h2>
+      <ul class="styled-list">
+        <li>البحث والتحليل المُوثَّق قبل البدء</li>
+        <li>تقديم الاستراتيجية والسرد مع التصميم</li>
+        <li>دليل البراند المفصّل</li>
+        <li>Mockups احترافية كثيرة</li>
+        <li>صياغة عقد احترافي وإصدار فاتورة</li>
+        <li>التواصل المهني والاستجابة السريعة</li>
+      </ul>
+
+      <div class="sticky-note">
+        <div class="sticky-note-label">قاعدة ذهبية</div>
+        <p>إذا قال الكلاينت "غالي" فلديك خيار: تنزل السعر (وتخسر) أو تُبرر القيمة (وتربح). المتصمم الواثق من عمله يُبرر، لا يُخفّض.</p>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-portfolio')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-pricing')">✓ تم الإكمال</button>
+        <button class="nav-btn primary" onclick="showLesson('l-marketing')">الدرس التالي ←</button>
+      </div>
+    </div>
+
+    <!-- L26: التسويق الشخصي -->
+    <div id="l-marketing" class="lesson-page" style="display:none"
+         data-chapter="٩ — بناء المسيرة المهنية" data-title="التسويق الشخصي" data-words="900">
+      <div class="lesson-part-tag">✦ الجزء الخامس — الفريلانس والأعمال</div>
+      <div class="lesson-chapter-num">الفصل التاسع · الدرس الثالث</div>
+      <h1 class="lesson-title">التسويق الشخصي وبناء الحضور</h1>
+      <p class="lesson-intro">في عالم الفريلانس، أنت لست متصمماً فقط — أنت علامة تجارية. بناء حضور قوي يجعل العملاء يأتون إليك، لا أن تبحث عنهم.</p>
+
+      <h2 class="content-h2">قنوات الحضور المهني</h2>
+      <div class="visual-grid">
+        <div class="visual-card">
+          <span class="visual-card-icon">📸</span>
+          <div class="visual-card-title">Instagram</div>
+          <div class="visual-card-desc">اعرض عملية التصميم (Behind the Scenes) — الناس يحبون الرحلة</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🎨</span>
+          <div class="visual-card-title">Behance</div>
+          <div class="visual-card-desc">أعمق حضور مهني — اعرض المشاريع بكل تفاصيلها</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">💼</span>
+          <div class="visual-card-title">LinkedIn</div>
+          <div class="visual-card-desc">للعملاء التجاريين والشركات — منصة مهملة من معظم المتصممين</div>
+        </div>
+        <div class="visual-card">
+          <span class="visual-card-icon">🌐</span>
+          <div class="visual-card-title">Upwork & Freelancer</div>
+          <div class="visual-card-desc">ابدأ بسعر تنافسي، اجمع تقييمات، ثم ارفع السعر تدريجياً</div>
+        </div>
+      </div>
+
+      <h2 class="content-h2">استراتيجية المحتوى</h2>
+      <p class="content-p">أفضل استراتيجية للمتصمم: <strong style="color:var(--red)">علّم وأنت تعمل</strong>. شارك عملية تصميمك، أخطاءك، دروسك — هذا يبني مجتمعاً يثق بك ويدفع لك لاحقاً.</p>
+      <ul class="styled-list">
+        <li>٣-٤ منشورات أسبوعياً — الانتظام أهم من الكثرة</li>
+        <li>أظهر العملية لا فقط النتيجة</li>
+        <li>شارك قرارات التصميم ومبرراتها</li>
+        <li>تفاعل مع مجتمع المتصممين — التواصل يفتح أبواباً</li>
+      </ul>
+
+      <div class="takeaways">
+        <div class="takeaways-title">الأفكار الرئيسية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>أنت علامة تجارية — استثمر في بناء هويتك الشخصية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>الانتظام في النشر أهم من الكمية</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>علّم وأنت تعمل — المحتوى التعليمي يبني ثقة أعمق</div>
+        <div class="takeaway-item"><div class="takeaway-check">✓</div>LinkedIn مهمل من المتصممين العرب — ميزة تنافسية ضخمة</div>
+      </div>
+
+      <div class="quiz-section">
+        <div class="quiz-title">الاختبار النهائي — <span>الفصل التاسع</span></div>
+        <div class="quiz-subtitle">سؤال ختامي</div>
+        <div class="quiz-q">
+          <div class="quiz-q-text">ما الاستراتيجية الأفضل لمتصمم يبدأ في بناء حضوره الرقمي؟</div>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">أ</span> نشر أكبر عدد ممكن من المنشورات يومياً على كل المنصات</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,true)"><span class="quiz-opt-letter">ب</span> نشر منتظم على منصتين اثنتين مع تعليم ومشاركة العملية</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">ج</span> الانتظار حتى يكون لديه ١٠٠ مشروع قبل البدء</div>
+            <div class="quiz-opt" onclick="quizAnswer(this,false)"><span class="quiz-opt-letter">د</span> التركيز فقط على Upwork وعدم استخدام السوشيال</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--card2);border:1px solid var(--border-red);border-radius:16px;padding:40px;margin:48px 0;text-align:center;">
+        <div style="font-size:48px;margin-bottom:16px;">🎓</div>
+        <h2 style="font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--white);margin-bottom:12px;">تهانيّ! أكملت الكتاب</h2>
+        <p style="color:var(--white-dim);font-size:15px;line-height:1.8;margin-bottom:24px;">أكملت رحلة من الصفر إلى الاحتراف في تصميم اللوجوهات والهوية البصرية. الخطوة التالية: التطبيق.</p>
+        <button class="btn-start" onclick="showLesson('cover')">العودة إلى الغلاف ←</button>
+      </div>
+
+      <div class="lesson-nav">
+        <button class="nav-btn" onclick="showLesson('l-pricing')">← الدرس السابق</button>
+        <button class="done-btn" onclick="markDone(this,'l-marketing')">✓ إكمال الكتاب</button>
+      </div>
+    </div>
+<!-- ADVANCED COURSE -->
+<div id="l-brief-deep" class="lesson-page" style="display:none"
+     data-chapter="١٠ — من البريف للفكرة" data-title="فهم البريف بعمق" data-words="900">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل العاشر · الدرس الأول</div>
+  <h1 class="lesson-title">فهم البريف بعمق</h1>
+  <p class="lesson-intro">أغلب المتصممين بيضيعوا وقت كبير لأنهم بيبدأوا يرسموا قبل ما يفهموا المشكلة. في الشغل الحقيقي، البريف هو الخريطة. لو الخريطة غلط، أي لوجو هتعمله هيطلع حلو شكليًا لكن مش شغال تجاريًا.</p>
+
+  <h2 class="content-h2">أنت محتاج تعرف إيه من البريف؟</h2>
+  <ul class="styled-list">
+    <li>اسم البراند ونطقه الصح</li>
+    <li>المجال الحقيقي والفرع الدقيق جوّاه</li>
+    <li>الناس اللي مستهدفهم: مين اللي هيشوف اللوجو؟</li>
+    <li>البراند عايز يوصل إحساس إيه: فخم، مرح، تقيل، مودرن، تراثي؟</li>
+    <li>منافسين البراند، وشكل السوق حوالين البراند</li>
+    <li>استخدامات اللوجو: سوشيال، واجهة، مطبوعات، تطبيقات، تغليف</li>
+  </ul>
+
+  <div class="info-card">
+    <div class="info-card-title">سؤال المتصمم الشاطر</div>
+    <p>قبل ما ترسم أي حاجة، اسأل نفسك: "العلامة دي لازم تبان إزاي علشان تكسب ثقة الكلاينت المستهدف؟" السؤال ده بيخليك تفكر كـ strategist مش كـ illustrator بس.</p>
+  </div>
+
+  <h2 class="content-h2">إزاي تقرأ البريف صح؟</h2>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">١</div>
+      <div class="step-content">
+        <div class="step-title">اكتب الكلمات اللي بتتكرر</div>
+        <div class="step-desc">لو لقيت كلمات زي luxury, trust, modern, handmade، يبقى دي إشارات مهمة جدًا لشخصية البراند. الكلمات اللي بتتكرر مش صدفة.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٢</div>
+      <div class="step-content">
+        <div class="step-title">فرّق بين المطلوب الحقيقي والمطلوب السطحي</div>
+        <div class="step-desc">الكلاينت ممكن يقول "عايز لوجو حلو" لكن الحقيقة إنه عايز يبان موثوق، أو يطلع أغلى، أو يتميّز عن منافسه.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٣</div>
+      <div class="step-content">
+        <div class="step-title">حوّل الكلام لأهداف تصميم</div>
+        <div class="step-desc">مثال: "عايزه فخم" = contrast عالي، spacing مريح، خطوط متوازنة، وتفاصيل قليلة لكن محسوبة.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="content-h2">ورقة الشغل اللي تمشي عليها</h2>
+  <div class="compare-table-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr><th>المدخل</th><th>إيه اللي تدور عليه</th><th>الناتج التصميمي</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>البراند</td><td>اسمه، نطقه، قصته</td><td>اتجاه بصري عام</td></tr>
+        <tr><td>الجمهور</td><td>العمر، الذوق، القدرة الشرائية</td><td>مستوى الفخامة أو البساطة</td></tr>
+        <tr><td>المنافسين</td><td>شكل السوق وإيه المتكرر</td><td>تميّز بصري واضح</td></tr>
+        <tr><td>الاستخدام</td><td>هيتطبع ولا رقمي بس</td><td>نسخ مختلفة للشعار</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>البريف مش ورقة للقراءة بس، ده أداة استراتيجية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>المطلوب الحقيقي غالبًا بيبقى مخفي تحت كلام الكلاينت الظاهري</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>كل كلمة في البريف ممكن تتحول لقرار تصميمي</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-marketing')">← من الجزء السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-brief-deep')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-keywords-mindmap')">الدرس التالي ←</button>
+  </div>
+</div>
+
+<div id="l-keywords-mindmap" class="lesson-page" style="display:none"
+     data-chapter="١٠ — من البريف للفكرة" data-title="الكلمات المفتاحية والمايند ماب" data-words="850">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل العاشر · الدرس الثاني</div>
+  <h1 class="lesson-title">الكلمات المفتاحية والمايند ماب</h1>
+  <p class="lesson-intro">أقوى أفكار اللوجوهات بتطلع لما تحوّل الكلام المجرد لعناصر مرئية. المايند ماب هي الجسر بين البريف والاسكتشات — بتخليك تشوف الفكرة بدل ما تفضل محبوس جوا الكلمات.</p>
+
+  <h2 class="content-h2">الطريقة العملية</h2>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">١</div>
+      <div class="step-content">
+        <div class="step-title">اسحب الكلمات</div>
+        <div class="step-desc">من البريف اكتب كل كلمة ليها علاقة بالبراند. مثال: Fire, Warmth, Gem, Luxury, Handmade, Trust, Mystery.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٢</div>
+      <div class="step-content">
+        <div class="step-title">صنّفها</div>
+        <div class="step-desc">قسّم الكلمات لـ: وصفية، عاطفية، بصرية، رمزية. ده هيمنعك تضيّع وسط الأفكار الكتير.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٣</div>
+      <div class="step-content">
+        <div class="step-title">حوّلها لرسومات</div>
+        <div class="step-desc">كل كلمة لازم تسألها: "أرسمها إزاي؟" لو كلمة Luxury، ممكن تتحول لإطار أنيق. لو كلمة Mystery، ممكن تتحول لفراغ سلبي.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">مثال سريع</div>
+    <p>لو شغال على براند مجوهرات، كلمات زي gemstone وspark وshine وcraft وheritage تقدر تطلع منها أفكار: ماسة مخفية، نجمة صغيرة، خطوط محفورة، أو مونوغرام فاخر.</p>
+  </div>
+
+  <h2 class="content-h2">Template للمايند ماب</h2>
+  <ul class="styled-list">
+    <li>في النص: اسم البراند</li>
+    <li>الفرع الأول: المعنى الحرفي للاسم</li>
+    <li>الفرع الثاني: إحساس البراند</li>
+    <li>الفرع الثالث: رموز بصرية مرتبطة</li>
+    <li>الفرع الرابع: ألوان ممكنة</li>
+    <li>الفرع الخامس: شخصية الخط</li>
+  </ul>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>المايند ماب بتطلعك من العشوائية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>كل كلمة ممكن تتحول لرمز أو شكل أو direction</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الأفكار القوية بتبدأ من اللغة قبل الرسم</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-brief-deep')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-keywords-mindmap')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-sketch-concept')">الدرس التالي ←</button>
+  </div>
+</div>
+
+<div id="l-sketch-concept" class="lesson-page" style="display:none"
+     data-chapter="١٠ — من البريف للفكرة" data-title="من الكونسبت للإسكيتش" data-words="900">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل العاشر · الدرس الثالث</div>
+  <h1 class="lesson-title">من الكونسبت للإسكيتش</h1>
+  <p class="lesson-intro">الاسكتش مش رسم نهائي. الاسكتش هو مساحة تفكير بسرعة. كل ما ترسم أفكار أكتر على الورق، كل ما هتطلع بحلول أذكى وأبسط.</p>
+
+  <h2 class="content-h2">المنهج الصح في الاسكتش</h2>
+  <ol class="num-list">
+    <li>اعمل Thumbnail Sketches صغيرة جدًا — 20 إلى 30 فكرة سريعة.</li>
+    <li>ماتدققش بدري؛ أهم حاجة variety.</li>
+    <li>اختار 3 أفكار فيها تميّز أو تركيب ذكي.</li>
+    <li>كبّر أفضل فكرة واعمل Refinement.</li>
+    <li>اختبرها في أحجام صغيرة جدًا قبل ما تروح Illustrator.</li>
+  </ol>
+
+  <div class="sticky-note">
+    <div class="sticky-note-label">مهم جدًا</div>
+    <p>الناس كتير بتفتكر إن المتصمم الشاطر هو اللي بيرسم حلو. الحقيقة إن المتصمم الشاطر هو اللي بيطلع أكتر من حل، ويعرف يشوف الفكرة الصح بسرعة.</p>
+  </div>
+
+  <h2 class="content-h2">أسئلة قبل ما تختار الكونسبت</h2>
+  <ul class="styled-list">
+    <li>هل الفكرة سهلة التمييز من أول نظرة؟</li>
+    <li>هل هتشتغل وهي صغيرة جدًا؟</li>
+    <li>هل فيها معنى مرتبط بالبراند فعلًا؟</li>
+    <li>هل فيها حاجة تخلّيها مميزة عن المنافسين؟</li>
+  </ul>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الاسكتش بيختصر وقت كتير على الكمبيوتر</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>ماينفعش تختار فكرة واحدة بدري جدًا</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الاختبار على أحجام صغيرة بيفضح أي ضعف في الكونسبت</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-keywords-mindmap')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-sketch-concept')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-illustrator-setup')">الجزء اللي بعده ←</button>
+  </div>
+</div>
+
+<div id="l-illustrator-setup" class="lesson-page" style="display:none"
+     data-chapter="١١ — ورش اليستريتور" data-title="تجهيز الملف للوجو" data-words="800">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل الحادي عشر · الدرس الأول</div>
+  <h1 class="lesson-title">تجهيز الملف للوجو في Illustrator</h1>
+  <p class="lesson-intro">قبل ما تلمس الـ Pen Tool أو تبدأ ترسم، لازم ملف Illustrator يبقى متظبط صح. الإعداد الأولي بيفرق جدًا في سرعة الشغل ونظافته واحترافيته.</p>
+
+  <h2 class="content-h2">إعدادات البداية الصح</h2>
+  <ul class="styled-list">
+    <li>Artboard مربع أو أفقي حسب نوع المشروع</li>
+    <li>RGB لو هتشتغل ديجيتال في الأول، وCMYK لو موجه للطباعة من البداية</li>
+    <li>Smart Guides شغّالة</li>
+    <li>Snap to Point فعّالة</li>
+    <li>Layers منظمة من أول دقيقة</li>
+  </ul>
+
+  <div class="info-card">
+    <div class="info-card-title">اختصارات لازم تحفظها</div>
+    <p><strong>Ctrl/Cmd + R</strong> لإظهار المساطر، <strong>Ctrl/Cmd + ;</strong> لإظهار الأدلة، <strong>Ctrl/Cmd + Y</strong> لمعاينة الـ Outline، و<strong>Ctrl/Cmd + 0</strong> عشان ترجع الشاشة للمقاس المناسب.</p>
+  </div>
+
+  <h2 class="content-h2">قبل ما تبدأ رسم</h2>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">١</div>
+      <div class="step-content">
+        <div class="step-title">استورد الاسكتش</div>
+        <div class="step-desc">حط الاسكتش على Layer لوحده وقلل الـ Opacity علشان يبقى مرجع مش عنصر شغال.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٢</div>
+      <div class="step-content">
+        <div class="step-title">حدد Grid</div>
+        <div class="step-desc">حتى لو مش هتستخدم Grid رسمي، وجود دليل بصري بيحافظ على التوازن والمقاسات.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٣</div>
+      <div class="step-content">
+        <div class="step-title">سمّي اللayers</div>
+        <div class="step-desc">Sketch / Guides / Shape / Refinement / Color / Export. التنظيم هنا بيوفر وقتك وقت المراجعة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الملف النضيف بيفرق قدّ الشغل نفسه</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الاختصارات هتسرّعك جدًا لو استخدمتها من البداية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>لازم تشتغل بعقلية "نظام" مش "تجارب عشوائية"</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-sketch-concept')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-illustrator-setup')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-pen-tool-masterclass')">الدرس التالي ←</button>
+  </div>
+</div>
+
+<div id="l-pen-tool-masterclass" class="lesson-page" style="display:none"
+     data-chapter="١١ — ورش اليستريتور" data-title="Pen Tool عملي" data-words="1200">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل الحادي عشر · الدرس الثاني</div>
+  <h1 class="lesson-title">Pen Tool عملي من الصفر للاحتراف</h1>
+  <p class="lesson-intro">ده مش درس تعريف Pen Tool. ده ورشة شغل كاملة. هنستخدم البين تول عشان نبني شكل لوجو نظيف، متوازن، وقابل للتعديل، بدل ما نرسم حاجات مكسّرة وملخبطة.</p>
+
+  <h2 class="content-h2">الفكرة الأساسية</h2>
+  <p class="content-p">البين تول بتتعامل مع الـ anchor points والـ handles. كل نقطة زيادة عن اللزوم بتعقّد الشكل. القاعدة الذهبية: <strong>أقل عدد نقاط = أفضل نتيجة</strong> لو أنت عايز فكتور احترافي.</p>
+
+  <div class="visual-grid">
+    <div class="visual-card">
+      <span class="visual-card-icon">●</span>
+      <div class="visual-card-title">Anchor Point</div>
+      <div class="visual-card-desc">النقطة اللي بتتحكم في بداية أو نهاية المسار</div>
+    </div>
+    <div class="visual-card">
+      <span class="visual-card-icon">↔</span>
+      <div class="visual-card-title">Handle</div>
+      <div class="visual-card-desc">الذراع اللي بيحدد انحناء المنحنى</div>
+    </div>
+    <div class="visual-card">
+      <span class="visual-card-icon">◠</span>
+      <div class="visual-card-title">Curve</div>
+      <div class="visual-card-desc">الانسياب اللي يدي اللوجو شخصية ناعمة</div>
+    </div>
+    <div class="visual-card">
+      <span class="visual-card-icon">▣</span>
+      <div class="visual-card-title">Corner</div>
+      <div class="visual-card-desc">الزوايا اللي بتدي وقفة وثقل بصري</div>
+    </div>
+  </div>
+
+  <h2 class="content-h2">ورشة: ارسم شكل بسيط صح</h2>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">١</div>
+      <div class="step-content">
+        <div class="step-title">ابدأ بالشكل الأساسي</div>
+        <div class="step-desc">ما تحاولش ترسم التزيين من أول خطوة. ابدأ بالهيكل الأساسي للشكل اللي هتبني عليه اللوجو.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٢</div>
+      <div class="step-content">
+        <div class="step-title">حدد أماكن النقاط</div>
+        <div class="step-desc">حط نقاط عند تغيّر الاتجاه، مش عند كل سنتيمتر. لو الخط منحني، حاول تقلل عدد النقاط.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٣</div>
+      <div class="step-content">
+        <div class="step-title">عدّل الـ handles</div>
+        <div class="step-desc">اسحب الـ handles بشكل متوازن. لو الانحناء يبان "مكسور"، يبقى زاوية الـ handle محتاجة ضبط.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٤</div>
+      <div class="step-content">
+        <div class="step-title">استخدم Outline</div>
+        <div class="step-desc">اختبر الشغل في Outline Mode عشان تشوف المسارات الحقيقية وتصلح أي نقاط زايدة أو قذرة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">تمرين عملي</div>
+    <p>جرّب ترسم قوس بسيط، حرف S، أو Flame shape باستخدام 4 نقاط فقط. بعد كده قارن بين نسخة فيها 8 نقاط ونسخة فيها 4. هتلاحظ إن القليل غالبًا أنضف وأقوى.</p>
+  </div>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الـ Pen Tool محتاج صبر ودقة، مش سرعة وخلاص</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>أقل نقاط ممكنة = vector أنضف وأسهل في التعديل</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>إدارة الـ handles هي سر النعومة والاحتراف</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-illustrator-setup')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-pen-tool-masterclass')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-shape-builder-pathfinder')">الدرس التالي ←</button>
+  </div>
+</div>
+
+<div id="l-shape-builder-pathfinder" class="lesson-page" style="display:none"
+     data-chapter="١١ — ورش اليستريتور" data-title="Shape Builder و Pathfinder" data-words="1100">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل الحادي عشر · الدرس الثالث</div>
+  <h1 class="lesson-title">Shape Builder و Pathfinder</h1>
+  <p class="lesson-intro">لو Pen Tool هو أداة الرسم الأساسية، فـ Shape Builder و Pathfinder هما أدوات التركيب. بيخلّوك تبني لوجوهات من أشكال بسيطة وتطلع نتيجة دقيقة جدًا.</p>
+
+  <h2 class="content-h2">إمتى تستخدم كل أداة؟</h2>
+  <table class="compare-table">
+    <thead>
+      <tr><th>الأداة</th><th>تستخدمها لما</th><th>ميزتها</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Shape Builder</strong></td><td>عايز تدمج أو تشيل أجزاء بسرعة بصريًا</td><td>مرن جدًا وسهل في التجريب</td></tr>
+      <tr><td><strong>Pathfinder Unite</strong></td><td>عايز تدمج أشكال نهائيًا</td><td>نضيف وسريع</td></tr>
+      <tr><td><strong>Minus Front</strong></td><td>عايز تعمل فراغ سلبي أو cutout</td><td>ممتاز للمساحة السلبية</td></tr>
+      <tr><td><strong>Intersect</strong></td><td>عايز تحتفظ بالجزء المشترك فقط</td><td>ينفع في الرموز المعقدة</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="content-h2">ورشة: تركيب شعار من 3 أشكال</h2>
+  <ol class="num-list">
+    <li>ابدأ بثلاث دوائر أو مربعات أو مثلثات.</li>
+    <li>جرّب الدمج والطرح لحد ما يظهر شكل فيه معنى.</li>
+    <li>اعمل اختبار تكرار: هل الشكل واضح في الأسود والأبيض؟</li>
+    <li>خفف التفاصيل الزائدة عشان ما يتهدش مع التصغير.</li>
+  </ol>
+
+  <div class="sticky-note">
+    <div class="sticky-note-label">فكرة مهمة</div>
+    <p>ناس كتير بتستخدم Shape Builder عشان "يطلّع شكل حلو". لكن الصح إنك تستخدمه عشان "تقول فكرة" بشكل نظيف وسريع. جمال الأداة مش الهدف، التوصيل هو الهدف.</p>
+  </div>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الأشكال البسيطة هي أفضل نقطة بداية للوجو محترم</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>Pathfinder ممتاز للتركيب النهائي، وShape Builder ممتاز للتجريب</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الفراغ السلبي ممكن يكون أقوى من الشكل نفسه</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-pen-tool-masterclass')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-shape-builder-pathfinder')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-vector-cleanup-export')">الدرس التالي ←</button>
+  </div>
+</div>
+
+<div id="l-vector-cleanup-export" class="lesson-page" style="display:none"
+     data-chapter="١١ — ورش اليستريتور" data-title="تنظيف الفكتور والتصدير" data-words="950">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل الحادي عشر · الدرس الرابع</div>
+  <h1 class="lesson-title">تنظيف الفكتور والتصدير</h1>
+  <p class="lesson-intro">النسخة النظيفة من اللوجو هي اللي بتعيش. بعد ما تخلص الرسم، تبدأ مرحلة التنضيف: ضبط الزوايا، توحيد السماكات، والتأكد إن اللوجو قابل للاستخدام في أي مكان.</p>
+
+  <h2 class="content-h2">Check list قبل التسليم</h2>
+  <ul class="styled-list">
+    <li>كل المسارات مقفولة ومفيش نقاط زيادة</li>
+    <li>الحواف متناظرة أو متوازنة بصريًا</li>
+    <li>النسخة بالأبيض والأسود شغالة</li>
+    <li>النسخة الصغيرة واضحة</li>
+    <li>الملف متقسم Layers بشكل واضح</li>
+  </ul>
+
+  <div class="info-card">
+    <div class="info-card-title">التصدير الصحيح</div>
+    <p>سلّم الكلاينت عادةً: <strong>AI</strong>، <strong>PDF</strong>، <strong>SVG</strong>، <strong>PNG</strong> بخلفية شفافة، ونسخة monochrome. ولو المشروع كبير، اعمل Brand Kit بسيط فيه كل الملفات دي.</p>
+  </div>
+
+  <h2 class="content-h2">أخطاء شائعة</h2>
+  <ul class="styled-list">
+    <li>نسيان تحويل النص ل outlines قبل التسليم</li>
+    <li>وجود نقاط Anchor كتير جدًا</li>
+    <li>إرسال ملف واحد فقط بدل package كامل</li>
+    <li>نسخة لون واحدة من غير fallback بالأبيض والأسود</li>
+  </ul>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>التنضيف أهم من الرسم أحيانًا</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الملفات الاحترافية لازم تكون متعددة الصيغ</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>نسخة اللوجو بالأبيض والأسود اختبار أساسي للقوة</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-shape-builder-pathfinder')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-vector-cleanup-export')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-visual-identity-system')">الجزء اللي بعده ←</button>
+  </div>
+</div>
+
+<div id="l-visual-identity-system" class="lesson-page" style="display:none"
+     data-chapter="١٢ — الهوية والفريلانس" data-title="بناء الهوية البصرية" data-words="1100">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل الثاني عشر · الدرس الأول</div>
+  <h1 class="lesson-title">بناء الهوية البصرية</h1>
+  <p class="lesson-intro">اللوجو لوحده مش كفاية. الهوية البصرية هي النظام الكامل اللي بيوحّد كل حاجة: الألوان، الخطوط، الأيقونات، الباترن، الموكابس، وحتى أسلوب التصوير.</p>
+
+  <h2 class="content-h2">مكوّنات الهوية</h2>
+  <div class="visual-grid">
+    <div class="visual-card"><span class="visual-card-icon">🎨</span><div class="visual-card-title">Color System</div><div class="visual-card-desc">الألوان الأساسية والفرعية والاستخدامات</div></div>
+    <div class="visual-card"><span class="visual-card-icon">🔤</span><div class="visual-card-title">Typography</div><div class="visual-card-desc">الخطوط للهيدرز والنصوص والواجهات</div></div>
+    <div class="visual-card"><span class="visual-card-icon">⬛</span><div class="visual-card-title">Layout</div><div class="visual-card-desc">المسافات، الشبكة، والنظام البصري</div></div>
+    <div class="visual-card"><span class="visual-card-icon">✦</span><div class="visual-card-title">Assets</div><div class="visual-card-desc">أيقونات، باترن، خطوط مساعدة، زخارف</div></div>
+  </div>
+
+  <h2 class="content-h2">إزاي تحوّل اللوجو لنظام كامل؟</h2>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">١</div>
+      <div class="step-content">
+        <div class="step-title">استخرج شخصية اللوجو</div>
+        <div class="step-desc">لو اللوجو فخم، يبقى باقي الهوية لازم يكون هادي وتقيل. لو مرِح، يبقى الهوية أخف وأسرع.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٢</div>
+      <div class="step-content">
+        <div class="step-title">اعمِل palette ذكي</div>
+        <div class="step-desc">لون أساسي + لون accent + درجات مساعدة. متغرقش الهوية ألوان كتير من غير داعي.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٣</div>
+      <div class="step-content">
+        <div class="step-title">اعمل تطبيقات</div>
+        <div class="step-desc">جرّب اللوجو على business card، social post، bag، box، letterhead. لو لسه شغال في، يبقى الهوية سليمة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-note">
+    <div class="sticky-note-label">نقطة فرق</div>
+    <p>الكلاينت مش دايمًا بيشتري "لوجو". ساعات هو بيشتري إحساس إن البراند كله متماسك. علشان كده الهوية البصرية بتزوّد قيمة الشغل بشكل ضخم.</p>
+  </div>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>الهوية البصرية نظام كامل مش مجرد لوجو</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>لازم كل عناصر الهوية تخدم نفس الشخصية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>التطبيق العملي هو الاختبار الحقيقي للهوية</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-vector-cleanup-export')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-visual-identity-system')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('l-freelance-marketing')">الدرس التالي ←</button>
+  </div>
+</div>
+
+<div id="l-freelance-marketing" class="lesson-page" style="display:none"
+     data-chapter="١٢ — الهوية والفريلانس" data-title="التسويق وبناء الشغل" data-words="1000">
+  <div class="lesson-part-tag">✦ الجزء السادس — الأدڤانسد العملي</div>
+  <div class="lesson-chapter-num">الفصل الثاني عشر · الدرس الثاني</div>
+  <h1 class="lesson-title">التسويق وبناء الشغل</h1>
+  <p class="lesson-intro">أجمد متصمم في العالم من غير تسويق هيفضل مجهول. هنا هتعرف إزاي تعرض نفسك، تجيب عملاء، وتبني بورتفوليو يبيع الشغل بدل ما يكتفي بعرضه.</p>
+
+  <h2 class="content-h2">بورتفوليو شاطر يعني إيه؟</h2>
+  <ul class="styled-list">
+    <li>Case studies مش صور مبعثرة</li>
+    <li>قبل/بعد + process + final outcome</li>
+    <li>شرح القرار التصميمي مش شكل الشغل بس</li>
+    <li>صور موكاب نظيفة ومناسبة للمجال</li>
+  </ul>
+
+  <h2 class="content-h2">هتجيب عميل إزاي؟</h2>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">١</div>
+      <div class="step-content">
+        <div class="step-title">اعرض قيمة مش سعر بس</div>
+        <div class="step-desc">الكلاينت لازم يفهم هياخد إيه من الشغل: ثقة، تميّز، شكل احترافي، أو مبيعات أحسن.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٢</div>
+      <div class="step-content">
+        <div class="step-title">خصص البروفايل</div>
+        <div class="step-desc">خلي وصفك، صورك، وشغلك كلهم بيتكلموا في نفس الاتجاه بدل ما يكونوا عشوائيين.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">٣</div>
+      <div class="step-content">
+        <div class="step-title">اتعلم التسعير</div>
+        <div class="step-desc">السعر مش رقم عشوائي. بيتبني على القيمة، الوقت، المخرجات، ودرجة تعقيد المشروع.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">طريقة سريعة للعرض</div>
+    <p>اعرض كل مشروع في 4 أجزاء: المشكلة، الفكرة، التنفيذ، النتيجة. كده الكلاينت يشوف إنك بتفكر مش بس بتنفّذ.</p>
+  </div>
+
+  <div class="takeaways">
+    <div class="takeaways-title">الأفكار الرئيسية</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>البورتفوليو القوي هو اللي بيبيع الشغل</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>التسويق الشخصي جزء من شغل المتصمم</div>
+    <div class="takeaway-item"><div class="takeaway-check">✓</div>العرض الصح بيزود قيمة الشغل بشكل مباشر</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="showLesson('l-visual-identity-system')">← الدرس السابق</button>
+    <button class="done-btn" onclick="markDone(this,'l-freelance-marketing')">✓ تم الإكمال</button>
+    <button class="nav-btn primary" onclick="showLesson('cover')">العودة للغلاف ←</button>
+  </div>
+</div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /app -->
+
+<script>
+  const totalLessons = 35;
+  let doneLessons = JSON.parse(localStorage.getItem('doneLessons') || '[]');
+
+  function showLesson(id) {
+    document.querySelectorAll('.lesson-page, #cover').forEach(el => el.style.display = 'none');
+    if (id === 'cover') {
+      document.getElementById('cover').style.display = '';
+      document.getElementById('breadcrumb').innerHTML = 'الكتاب التفاعلي بالمصري';
+    } else {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = '';
+      const ch = el.dataset.chapter || '';
+      const ti = el.dataset.title || '';
+      document.getElementById('breadcrumb').innerHTML = ch ? `${ch} · <span>${ti}</span>` : `<span>${ti}</span>`;
+      const words = parseInt(el.dataset.words || '500');
+      const mins = Math.max(1, Math.round(words / 180));
+      document.getElementById('reading-time').textContent = `${mins} دقيقة للقراءة`;
+    }
+    document.getElementById('main').scrollTo ? document.getElementById('main').scrollTo(0,0) : window.scrollTo(0,0);
+    document.getElementById('content').scrollTop = 0;
+    window.scrollTo(0,0);
+    updateTocActive(id);
+    updateProgress();
+    if (window.innerWidth <= 900) closeSidebar();
+  }
+
+  function toggleChapter(btn, id) {
+    const list = document.getElementById(id);
+    const isOpen = list.classList.contains('open');
+    document.querySelectorAll('.toc-lessons').forEach(l => l.classList.remove('open'));
+    document.querySelectorAll('.toc-chapter-btn').forEach(b => b.classList.remove('open'));
+    if (!isOpen) {
+      list.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  function updateTocActive(lessonId) {
+    document.querySelectorAll('.toc-lesson-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.toc-chapter-btn').forEach(btn => btn.classList.remove('active'));
+    if (lessonId === 'cover') return;
+    const btns = document.querySelectorAll('.toc-lesson-btn');
+    btns.forEach(btn => {
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(lessonId)) {
+        btn.classList.add('active');
+        const parent = btn.closest('.toc-lessons');
+        if (parent) {
+          parent.classList.add('open');
+          const chBtn = parent.previousElementSibling;
+          if (chBtn) { chBtn.classList.add('open'); chBtn.classList.add('active'); }
+        }
+      }
+    });
+  }
+
+  function markDone(btn, id) {
+    if (!doneLessons.includes(id)) {
+      doneLessons.push(id);
+      localStorage.setItem('doneLessons', JSON.stringify(doneLessons));
+    }
+    btn.classList.add('done');
+    btn.textContent = '✓ مكتمل';
+    const tocBtn = document.querySelector(`.toc-lesson-btn[onclick*="${id}"]`);
+    if (tocBtn) { tocBtn.classList.add('done'); tocBtn.querySelector('.lesson-dot').style.background = 'var(--red)'; }
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const pct = Math.round((doneLessons.length / totalLessons) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+    document.querySelectorAll('.done-btn').forEach(btn => {
+      const id = btn.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+      if (id && doneLessons.includes(id)) {
+        btn.classList.add('done');
+        btn.textContent = '✓ مكتمل';
+      }
+    });
+  }
+
+  function quizAnswer(el, correct) {
+    const container = el.closest('.quiz-options');
+    container.querySelectorAll('.quiz-opt').forEach(opt => {
+      opt.style.pointerEvents = 'none';
+      opt.classList.remove('correct','wrong');
+    });
+    el.classList.add(correct ? 'correct' : 'wrong');
+    if (!correct) {
+      container.querySelectorAll('.quiz-opt').forEach((opt, i) => {
+        if (opt.getAttribute('onclick')?.includes('true')) opt.classList.add('correct');
+      });
+    }
+  }
+
+  function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const main = document.getElementById('main');
+    const rp = document.getElementById('reading-progress');
+    const overlay = document.getElementById('overlay');
+    if (window.innerWidth <= 900) {
+      sb.classList.toggle('visible');
+      overlay.classList.toggle('visible');
+    } else {
+      sb.classList.toggle('hidden');
+      main.classList.toggle('full');
+      rp.classList.toggle('full');
+    }
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('visible');
+    document.getElementById('overlay').classList.remove('visible');
+  }
+
+  // reading progress
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const scrolled = el.scrollTop;
+    const total = el.scrollHeight - el.clientHeight;
+    const pct = total > 0 ? (scrolled / total) * 100 : 0;
+    document.getElementById('reading-progress-fill').style.width = pct + '%';
+  });
+
+  // search
+  document.getElementById('search-input').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.toc-lesson-btn').forEach(btn => {
+      const text = btn.textContent.toLowerCase();
+      btn.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+    if (q) {
+      document.querySelectorAll('.toc-lessons').forEach(l => l.classList.add('open'));
+      document.querySelectorAll('.toc-chapter-btn').forEach(b => b.classList.add('open'));
+    }
+  });
+
+  // init
+  updateProgress();
+  doneLessons.forEach(id => {
+    const tocBtn = document.querySelector(`.toc-lesson-btn[onclick*="${id}"]`);
+    if (tocBtn) { tocBtn.classList.add('done'); const dot = tocBtn.querySelector('.lesson-dot'); if(dot) dot.style.background='var(--red)'; }
+  });
+</script>
+
+<!-- MEGA EXPANSION -->
+<section style="padding:40px;background:#171717;color:#fff;border-top:2px solid #D6001C">
+<h1>الإصدار الموسع - Illustrator Masterclass</h1>
+
+<h2>Pen Tool Masterclass</h2>
+<p>شرح تفصيلي للـ Anchor Points و Bezier Curves وكيفية رسم اللوجوهات الاحترافية خطوة بخطوة.</p>
+<ul>
+<li>رسم شعلة احترافية</li>
+<li>رسم حرف F</li>
+<li>رسم Monogram</li>
+<li>تصحيح المنحنيات</li>
+<li>تمارين عملية</li>
+</ul>
+
+<h2>Shape Builder Workshop</h2>
+<p>ورش عملية لبناء شعارات حقيقية من الأشكال الهندسية.</p>
+
+<h2>Pathfinder Masterclass</h2>
+<p>شرح Unite و Minus Front و Intersect و Divide مع أمثلة عملية.</p>
+
+<h2>Typography Advanced</h2>
+<p>Kerning - Tracking - Leading - Font Pairing - Custom Lettering.</p>
+
+<h2>Brand Identity System</h2>
+<p>بناء هوية بصرية كاملة من الصفر وحتى Brand Guidelines.</p>
+
+<h2>Freelancing & Business</h2>
+<p>التسعير - بناء البورتفوليو - Behance - Upwork - Freelancer - مستقل - التفاوض مع العملاء.</p>
+
+<h2>Case Studies</h2>
+<p>6 مشاريع كاملة من البريف حتى التسليم.</p>
+</section>
+
+<section style="max-width:900px;margin:40px auto;padding:30px;border:1px solid #D6001C;border-radius:12px;background:#171717;color:#fff">
+<h2>خطة النسخة الكاملة</h2>
+<p>تم إعادة ضبط الواجهة لتكون القراءة أوضح. لإنتاج كتاب فعلي يحتوي على 100+ درس بشرح تفصيلي وصور وتمارين لكل أداة في Illustrator، يلزم تأليف محتوى جديد بالكامل ومش مجرد تعديل HTML. هذه النسخة تعتبر قاعدة محسنة للكتاب الحالي.</p>
+</section>
+
+</body>
+</html>
+
