@@ -126,3 +126,57 @@ object-fit:cover;
 display:block;
 border-radius:20px;
 }
+
+
+/* Mobile Optimization */
+.menu-toggle{display:none;font-size:28px;cursor:pointer;color:#fff}
+
+@media (max-width:768px){
+body{padding-top:80px}
+.navbar,.nav{
+width:95%;
+padding:14px 16px;
+top:10px;
+}
+.brand span{font-size:18px}
+.menu-toggle{display:block}
+.nav-links{
+display:none;
+position:absolute;
+top:70px;
+left:0;
+right:0;
+background:#121212;
+border-radius:16px;
+padding:15px;
+flex-direction:column;
+gap:12px;
+}
+.nav-links.active{display:flex}
+.nav-links a{margin:0;padding:10px 0}
+.hero{
+grid-template-columns:1fr;
+gap:30px;
+padding:110px 20px 40px;
+text-align:center;
+min-height:auto;
+}
+.hero-image img{
+max-width:280px;
+margin:auto;
+}
+.hero-content h1{
+font-size:42px;
+line-height:1.1;
+}
+.lead{font-size:16px}
+.section,.about,.portfolio{padding:70px 20px}
+.about h2,.portfolio h2,.section h2{font-size:34px}
+.card{padding:24px;min-height:auto}
+.card h3{font-size:36px}
+.links-card{padding:24px}
+.project-cover,.cover-image,.gallery-item img,.project-gallery img,.block-image img,.content-image img{
+height:auto;
+min-height:220px;
+}
+}

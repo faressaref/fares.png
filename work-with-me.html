@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="style.css"><title>Work With Me</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="assets/images/logo.png"><title>Work With Me</title>
 <style>
 .brief-wrap{max-width:900px;margin:120px auto 80px;padding:0 20px}
 .step-card{background:#171717;border:1px solid #2a2a2a;border-radius:20px;padding:30px}
@@ -20,7 +21,7 @@
 <span>Fares Salah</span>
 </a>
 </div>
-<div class="nav-links">
+<div class="menu-toggle">☰</div><div class="nav-links">
 <a href="index.html">Home</a>
 <a href="portfolio.html">Portfolio</a>
 <a href="work-with-me.html">Work With Me</a>
@@ -106,4 +107,4 @@ function nextStep(){
 }
 function prevStep(){if(current>0)current--;show();}
 
-</script></body></html>
+</script><script>const t=document.querySelector(".menu-toggle");const n=document.querySelector(".nav-links");t&&t.addEventListener("click",()=>n.classList.toggle("active"));</script></body></html>
